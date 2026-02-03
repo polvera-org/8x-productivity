@@ -10,11 +10,22 @@ No fluff. No bullshit. Just 8 specialized AI agents that streamline your entire 
 
 ## Installation
 
+Requirements: Node.js >= 18.
+
 ```bash
-./scripts/install.sh
+npx 8xp install
 ```
 
-Follow the prompts to pick your CLI (opencode, claude-code, cursor) and target project path. The script installs agent files into `.<cli>/agents` for the selected CLI.
+Follow the prompts to pick your CLI (opencode, claude-code, cursor, agentzero) and target path. Agents are installed into `.<cli>/agents` and skills into `.<cli>/skills` for the selected CLI.
+
+You can also run it non-interactively:
+
+```bash
+npx 8xp install --platform=opencode --path=/path/to/project
+npx 8xp install --platform=claude-code --path=/path/to/project
+npx 8xp install --platform=cursor --path=/path/to/project
+npx 8xp install --platform=agentzero --path=/path/to/agentzero/usr
+```
 
 ---
 

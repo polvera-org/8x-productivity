@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import readline from "node:readline/promises";
 import process from "node:process";
 
-const AGENT_ZERO_DEFAULT_DIR = "/a0/usr/agents";
+const AGENT_ZERO_DEFAULT_BASE_DIR = "/a0/usr";
 
 type Frontmatter = {
   name: string;
@@ -83,6 +83,26 @@ const fileExists = async (filePath: string) => {
   } catch {
     return false;
   }
+};
+
+const parseArgs = (argv: string[]) => {
+  const result: Record<string, string> = {};
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (!arg.startsWith("--")) {
+      continue;
+    }
+    const [key, value] = arg.slice(2).split("=", 2);
+    if (value !== undefined) {
+      result[key] = value;
+    } else if (argv[index + 1] && !argv[index + 1].startsWith("--")) {
+      result[key] = argv[index + 1];
+      index += 1;
+    } else {
+      result[key] = "true";
+    }
+  }
+  return result;
 };
 
 const isDirectory = async (dirPath: string) => {
@@ -196,9 +216,11 @@ const scaffoldAgentZero = async (
   }
 };
 
-const resolveAgentZeroSkillsDir = (agentsDir: string) => {
-  const baseDir = path.dirname(agentsDir);
-  return path.join(baseDir, "skills", "8x-productivity");
+const resolveAgentZeroPaths = (baseDir: string) => {
+  return {
+    agentsDir: path.join(baseDir, "agents"),
+    skillsDir: path.join(baseDir, "skills", "8x-productivity"),
+  };
 };
 
 const run = async () => {
@@ -219,62 +241,102 @@ const run = async () => {
     );
   }
 
+  const args = parseArgs(process.argv.slice(2));
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-  console.log("Select CLI to install agents for:");
-  console.log("1) opencode");
-  console.log("2) claude-code");
-  console.log("3) cursor");
-  console.log("4) agent-zero");
+  const showHelp = args.help === "true";
+  if (showHelp) {
+    console.log("Usage: npx 8xp install --platform=<platform> [--path=<path>]");
+    console.log("Platforms: opencode, claude-code, cursor, agentzero");
+    console.log(
+      "Agent Zero: --path should be the base /usr directory containing agents/ and skills/",
+    );
+    rl.close();
+    return;
+  }
 
-  const cliChoice = (await rl.question("")).trim();
   let cliName = "";
   let targetDirName = "";
 
-  switch (cliChoice) {
-    case "1":
-    case "opencode":
-      cliName = "opencode";
-      targetDirName = ".opencode";
-      break;
-    case "2":
-    case "claude-code":
-    case "claude":
-      cliName = "claude-code";
-      targetDirName = ".claude";
-      break;
-    case "3":
-    case "cursor":
-      cliName = "cursor";
-      targetDirName = ".cursor";
-      break;
-    case "4":
-    case "agent-zero":
-    case "agentzero":
-      cliName = "agent-zero";
-      break;
-    default:
-      rl.close();
-      throw new Error("Invalid selection. Please choose 1, 2, 3, or 4.");
+  const platformInput = args.platform?.toLowerCase();
+  if (platformInput) {
+    switch (platformInput) {
+      case "opencode":
+        cliName = "opencode";
+        targetDirName = ".opencode";
+        break;
+      case "claude-code":
+      case "claude":
+        cliName = "claude-code";
+        targetDirName = ".claude";
+        break;
+      case "cursor":
+        cliName = "cursor";
+        targetDirName = ".cursor";
+        break;
+      case "agent-zero":
+      case "agentzero":
+        cliName = "agent-zero";
+        break;
+      default:
+        rl.close();
+        throw new Error("Invalid --platform. Use opencode, claude-code, cursor, or agentzero.");
+    }
+  } else {
+    console.log("Select CLI to install agents for:");
+    console.log("1) opencode");
+    console.log("2) claude-code");
+    console.log("3) cursor");
+    console.log("4) agent-zero");
+    const cliChoice = (await rl.question("")).trim();
+    switch (cliChoice) {
+      case "1":
+      case "opencode":
+        cliName = "opencode";
+        targetDirName = ".opencode";
+        break;
+      case "2":
+      case "claude-code":
+      case "claude":
+        cliName = "claude-code";
+        targetDirName = ".claude";
+        break;
+      case "3":
+      case "cursor":
+        cliName = "cursor";
+        targetDirName = ".cursor";
+        break;
+      case "4":
+      case "agent-zero":
+      case "agentzero":
+        cliName = "agent-zero";
+        break;
+      default:
+        rl.close();
+        throw new Error("Invalid selection. Please choose 1, 2, 3, or 4.");
+    }
   }
 
   if (cliName === "agent-zero") {
-    const targetAgentsDir = (
-      await rl.question(
-        `Enter agent-zero agents path (leave empty for ${AGENT_ZERO_DEFAULT_DIR}):\n`,
-      )
-    ).trim();
+    const basePath = args.path?.trim();
+    const targetBaseDir = basePath
+      ? basePath
+      : (
+          await rl.question(
+            `Enter agent-zero base path (leave empty for ${AGENT_ZERO_DEFAULT_BASE_DIR}):\n`,
+          )
+        ).trim();
 
-    const agentsDir = targetAgentsDir || AGENT_ZERO_DEFAULT_DIR;
+    const baseDir = targetBaseDir || AGENT_ZERO_DEFAULT_BASE_DIR;
+    const { agentsDir, skillsDir } = resolveAgentZeroPaths(baseDir);
     await scaffoldAgentZero(
       sourceAgentsDir,
       agentsDir,
       communicationPromptPath,
     );
-    const skillsDir = resolveAgentZeroSkillsDir(agentsDir);
     await copyDirContents(skillsSourceDir, skillsDir);
     rl.close();
     console.log(`Agents installed to ${agentsDir} for ${cliName}.`);
@@ -282,9 +344,13 @@ const run = async () => {
     return;
   }
 
-  const projectPathInput = (
-    await rl.question("Enter project path (leave empty for current directory):\n")
-  ).trim();
+  const projectPathInput = args.path
+    ? args.path.trim()
+    : (
+        await rl.question(
+          "Enter project path (leave empty for current directory):\n",
+        )
+      ).trim();
   const projectPath = projectPathInput || process.cwd();
   if (!(await isDirectory(projectPath))) {
     rl.close();

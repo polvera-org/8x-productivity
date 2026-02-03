@@ -6,6 +6,9 @@
   "scripts": {
     "agents:install": "tsx scripts/install.ts"
   },
+  "bin": {
+    "8xp": "./index.js"
+  },
   "devDependencies": {
     "tsx": "^4.19.2"
   },
