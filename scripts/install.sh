@@ -5,6 +5,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "$script_dir/.." && pwd)"
 source_dir="$repo_root/src/agents"
+skills_source_dir="$repo_root/src/skills"
 
 echo "Select CLI to install agents for:"
 echo "1) opencode"
@@ -47,9 +48,11 @@ fi
 
 target_parent_dir="$project_path/$target_dir_name"
 target_dir="$target_parent_dir/agents"
+skills_target_dir="$target_parent_dir/skills"
 mkdir -p "$target_parent_dir"
 
 cp -R "$source_dir" "$target_parent_dir"/
+cp -R "$skills_source_dir" "$target_parent_dir"/
 
 if [ "$cli_name" = "opencode" ]; then
   for file in "$target_dir"/*.md; do
@@ -72,3 +75,4 @@ EOF
 fi
 
 echo "Agents installed to $target_dir for $cli_name."
+echo "Skills installed to $skills_target_dir for $cli_name."
