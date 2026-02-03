@@ -15,7 +15,7 @@ Requirements: Node.js >= 18.
 ```bash
 git clone git@github.com:polvera-org/8x-productivity.git
 cd 8x-productivity
-npx 8xp install
+npx 8x install
 ```
 
 Follow the prompts to pick your CLI (opencode, claude-code, cursor, agentzero) and target path. Agents are installed into `.<cli>/agents` and skills into `.<cli>/skills` for the selected CLI.
@@ -23,10 +23,10 @@ Follow the prompts to pick your CLI (opencode, claude-code, cursor, agentzero) a
 You can also run it non-interactively:
 
 ```bash
-npx 8xp install --platform=opencode --path=/path/to/project
-npx 8xp install --platform=claude-code --path=/path/to/project
-npx 8xp install --platform=cursor --path=/path/to/project
-npx 8xp install --platform=agentzero --path=/path/to/agentzero/usr
+npx 8x install --platform=opencode --path=/path/to/project
+npx 8x install --platform=claude-code --path=/path/to/project
+npx 8x install --platform=cursor --path=/path/to/project
+npx 8x install --platform=agentzero --path=/path/to/agentzero/usr
 ```
 
 ---

@@ -3,11 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "agents:install": "tsx scripts/install.ts"
-  },
   "bin": {
-    "8xp": "./index.js"
+    "8x": "./index.js"
   },
   "devDependencies": {
     "tsx": "^4.19.2"

@@ -249,7 +249,7 @@ const run = async () => {
 
   const showHelp = args.help === "true";
   if (showHelp) {
-    console.log("Usage: npx 8xp install --platform=<platform> [--path=<path>]");
+    console.log("Usage: npx 8x install --platform=<platform> [--path=<path>]");
     console.log("Platforms: opencode, claude-code, cursor, agentzero");
     console.log(
       "Agent Zero: --path should be the base /usr directory containing agents/ and skills/",

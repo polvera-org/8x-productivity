@@ -9,13 +9,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const [command, ...args] = process.argv.slice(2);
 
 const printHelp = () => {
-  console.log("Usage: npx 8xp <command> [...arguments]");
+  console.log("Usage: npx 8x <command> [...arguments]");
   console.log("Commands:");
   console.log("  install    Install agents and skills");
   console.log("Examples:");
-  console.log("  npx 8xp install --platform=opencode --path=/path/to/project");
+  console.log("  npx 8x install --platform=opencode --path=/path/to/project");
   console.log(
-    "  npx 8xp install --platform=agentzero --path=/path/to/agentzero/usr",
+    "  npx 8x install --platform=agentzero --path=/path/to/agentzero/usr",
   );
 };
 
