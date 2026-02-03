@@ -45,11 +45,11 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 
 | Agent | Role | What They Do |
 |-------|------|--------------|
-| **product-owner** | Product Discovery | Frames the problem, defines outcomes, and writes `spec.md` |
+| **product-owner** | Product Requirements Definition | Frames the problem, defines outcomes, and writes `spec.md` |
 | **system-architect** | Architecture & Decisions | Designs `architecture.md`, captures trade-offs and risks |
-| **frontend-developer** | Frontend Implementation | Builds production UI flows with performance and accessibility focus |
-| **backend-developer** | Backend Implementation | Builds API/services with reliability, observability, and safety |
 | **data-engineer** | Data Engineering | Defines data models, pipelines, quality checks, and SLAs |
+| **backend-developer** | Backend Implementation | Builds API/services with reliability, observability, and safety |
+| **frontend-developer** | Frontend Implementation | Builds production UI flows with performance and accessibility focus |
 | **qa-specialist** | QA Gate | Runs risk-based validation and release criteria checks |
 | **security-engineer** | Security Validation | Threat models and reviews security-sensitive changes |
 | **tech-writer** | Documentation | Updates `/docs/` with usage, architecture, and change notes |

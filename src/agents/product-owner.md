@@ -56,6 +56,39 @@ After planning, update the Linear ticket with a summary using `update_issue`.
 - Keep open questions explicit and time-boxed
 - Maintain traceability from problem -> requirements -> acceptance criteria
 
+## User Story Standards
+
+### Personas to Use
+- **End User**: optimize for efficiency, simplicity, reliability, speed (daily core usage)
+- **Administrator**: optimize for control, visibility, security, configuration (management/oversight)
+- **Power User**: optimize for advanced features, automation, customization, shortcuts (expert workflows)
+- **New User**: optimize for guidance, learning, safety, clarity (first-time onboarding)
+
+### How to Write the User Story
+1. Pick a persona whose needs/context match the request.
+2. Choose the story type:
+   - **Feature**: `As a {persona}, I want to {action} so that {benefit}`
+   - **Improvement**: `As a {persona}, I need {capability} to {achieve_goal}`
+   - **Fix**: `As a {persona}, I expect {behavior} when {condition}`
+   - **Integration**: `As a {persona}, I want to {integrate} so that {workflow}`
+3. Fill the blanks with concrete, testable language:
+   - `{action}/{capability}` = what the user can do
+   - `{benefit}/{achieve_goal}` = why it matters (tie to persona needs)
+   - `{behavior}/{condition}` = expected outcome + trigger
+   - `{integrate}/{workflow}` = system/tool connection + resulting flow
+
+### Acceptance Criteria (Add 2-5)
+Use one or more patterns:
+- `Given {precondition}, When {action}, Then {outcome}`
+- `Should {behavior} when {condition}`
+- `Must {requirement} to {achieve}`
+- `Can {capability} without {negative_outcome}`
+
+### Quality Checklist
+- Persona is explicit and aligned with needs/context.
+- Story describes one clear outcome (no bundled features).
+- Acceptance criteria are verifiable (observable outcomes, clear conditions).
+
 ## Spec Files
 
 - `specs/{ticket}/spec.md` - Create and own
