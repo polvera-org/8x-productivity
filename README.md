@@ -10,7 +10,9 @@ No fluff. No bullshit. Just 8 specialized AI agents that streamline your entire 
 
 ## Installation
 
-Requirements: Node.js >= 18.
+**Requirement**: Node.js >= 18.
+
+**Requirement**: Agents are optimized for the Linear MCP integration. Ensure the Linear MCP is available and configured for your CLI so agents can update tickets, add comments, and apply labels as part of the workflow.
 
 ```bash
 git clone git@github.com:polvera-org/8x-productivity.git
