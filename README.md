@@ -13,6 +13,8 @@ No fluff. No bullshit. Just 8 specialized AI agents that streamline your entire 
 Requirements: Node.js >= 18.
 
 ```bash
+git clone git@github.com:polvera-org/8x-productivity.git
+cd 8x-productivity
 npx 8xp install
 ```
 
@@ -46,9 +48,9 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 | **frontend-developer** | Frontend Implementation | Builds React/Next.js components and UI |
 | **backend-developer** | Backend Implementation | Creates FastAPI services and endpoints |
 | **data-engineer** | Data Modeling | Designs database schema, writes migrations (Prisma) |
-| **quality-assurance** | QA Gate | Validates everything meets production standards |
+| **qa-specialist** | QA Gate | Validates everything meets production standards |
 | **security-engineer** | Security Validation | Reviews security-sensitive code and changes |
-| **documentator** | Documentation | Updates `/docs/` after ticket completion |
+| **tech-writer** | Documentation | Updates `/docs/` after ticket completion |
 
 ---
 
@@ -67,12 +69,12 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 - All implementation agents track progress in `tasks.md`
 
 ### Phase 3: Validation
-- **quality-assurance** reviews against `spec.md` acceptance criteria
+- **qa-specialist** reviews against `spec.md` acceptance criteria
 - **security-engineer** reviews security-sensitive changes
 - No PR merge without QA approval
 
 ### Phase 4: Completion
-- **documentator** updates `/docs/` after ticket is merged
+- **tech-writer** updates `/docs/` after ticket is merged
 
 ---
 
