@@ -3,3 +3,5 @@
 .cursor/
 .env
 node_modules/
+ref/
+references/

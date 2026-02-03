@@ -43,14 +43,14 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 
 | Agent | Role | What They Do |
 |-------|------|--------------|
-| **product-owner** | Business Systems Analyst | Writes `spec.md` with requirements, scope, and Definition of Done |
-| **system-architect** | Pattern Validator | Designs `architecture.md`, maintains `research.md` |
-| **frontend-developer** | Frontend Implementation | Builds React/Next.js components and UI |
-| **backend-developer** | Backend Implementation | Creates FastAPI services and endpoints |
-| **data-engineer** | Data Modeling | Designs database schema, writes migrations (Prisma) |
-| **qa-specialist** | QA Gate | Validates everything meets production standards |
-| **security-engineer** | Security Validation | Reviews security-sensitive code and changes |
-| **tech-writer** | Documentation | Updates `/docs/` after ticket completion |
+| **product-owner** | Product Discovery | Frames the problem, defines outcomes, and writes `spec.md` |
+| **system-architect** | Architecture & Decisions | Designs `architecture.md`, captures trade-offs and risks |
+| **frontend-developer** | Frontend Implementation | Builds production UI flows with performance and accessibility focus |
+| **backend-developer** | Backend Implementation | Builds API/services with reliability, observability, and safety |
+| **data-engineer** | Data Engineering | Defines data models, pipelines, quality checks, and SLAs |
+| **qa-specialist** | QA Gate | Runs risk-based validation and release criteria checks |
+| **security-engineer** | Security Validation | Threat models and reviews security-sensitive changes |
+| **tech-writer** | Documentation | Updates `/docs/` with usage, architecture, and change notes |
 
 ---
 
@@ -63,9 +63,9 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 - **system-architect** updates `research.md` with technical findings
 
 ### Phase 2: Implementation
-- **data-engineer** handles schema changes first (if needed)
+- **data-engineer** handles data model, pipeline, or contract changes first (if needed)
 - **backend-developer** implements API/services using `tasks.md`
-- **frontend-developer** implements UI using `tasks.md`
+- **frontend-developer** implements UI flows using `tasks.md`
 - All implementation agents track progress in `tasks.md`
 
 ### Phase 3: Validation
