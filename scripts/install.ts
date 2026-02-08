@@ -228,6 +228,7 @@ const run = async () => {
   const repoRoot = path.resolve(scriptDir, "..");
   const sourceAgentsDir = path.join(repoRoot, "src", "agents");
   const skillsSourceDir = path.join(repoRoot, "src", "skills");
+  const referencesSourceDir = path.join(repoRoot, "src", "references");
   const communicationPromptPath = path.join(
     repoRoot,
     "src",
@@ -359,10 +360,12 @@ const run = async () => {
   const targetParentDir = path.join(projectPath, targetDirName);
   const targetAgentsDir = path.join(targetParentDir, "agents");
   const targetSkillsDir = path.join(targetParentDir, "skills");
+  const targetReferenceDir = path.join(targetParentDir, "reference");
   await ensureDir(targetParentDir);
 
   await copyAgentFiles(sourceAgentsDir, targetAgentsDir);
   await copyDirContents(skillsSourceDir, targetSkillsDir);
+  await copyDirContents(referencesSourceDir, targetReferenceDir);
 
   if (cliName === "opencode") {
     await updateOpencodeAgents(targetAgentsDir);
@@ -371,6 +374,7 @@ const run = async () => {
   rl.close();
   console.log(`Agents installed to ${targetAgentsDir} for ${cliName}.`);
   console.log(`Skills installed to ${targetSkillsDir} for ${cliName}.`);
+  console.log(`References installed to ${targetReferenceDir} for ${cliName}.`);
 };
 
 run().catch((error) => {

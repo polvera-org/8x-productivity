@@ -43,6 +43,7 @@ Spec files you manage:
 - `specs/{ticket}/spec.md` - Read only
 - `specs/{ticket}/research.md` - Add technical findings
 - `specs/{ticket}/architecture.md` - Create and own
+- `specs/{ticket}/tasks.md` - Create and own
 
 Structure for architecture.md:
 ```markdown

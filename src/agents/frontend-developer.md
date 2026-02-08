@@ -94,7 +94,6 @@ Keep the Linear ticket updated throughout implementation:
 
 ## References
 
-- `ref/eng-team/senior-frontend/SKILL.md`
-- `ref/eng-team/senior-frontend/references/react_patterns.md`
-- `ref/eng-team/senior-frontend/references/frontend_best_practices.md`
-- `ref/eng-team/senior-frontend/references/nextjs_optimization_guide.md`
+- `reference/react_patterns.md`
+- `reference/frontend_best_practices.md`
+- `reference/nextjs_optimization_guide.md`

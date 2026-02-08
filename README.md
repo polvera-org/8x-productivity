@@ -52,7 +52,8 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 | **frontend-developer** | Frontend Implementation | Builds production UI flows with performance and accessibility focus |
 | **qa-specialist** | QA Gate | Runs risk-based validation and release criteria checks |
 | **security-engineer** | Security Validation | Threat models and reviews security-sensitive changes |
-| **tech-writer** | Documentation | Updates `/docs/` with usage, architecture, and change notes |
+| **writer** | Marketing Content | Writes launch copy, campaigns, and video scripts |
+| **designer** | Visual Design | Creates images, brand assets, and video visuals |
 
 ---
 
@@ -76,7 +77,8 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 - No PR merge without QA approval
 
 ### Phase 4: Completion
-- **tech-writer** updates `/docs/` after ticket is merged
+- **product-owner** updates `/docs/` after ticket is approved by the CEO (Human)
+- **writer** Writes concise changelog `/docs/changelogs/` after ticket is merged
 
 ---
 
