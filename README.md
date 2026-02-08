@@ -2,7 +2,7 @@
 
 **A lightweight meta-prompting framework that makes solo developers 8x more productive through intelligent agent orchestration.**
 
-No fluff. No bullshit. Just 8 specialized AI agents that streamline your entire software development lifecycle.
+No fluff. No bullshit. Just 9 specialized AI agents that streamline your entire software development lifecycle.
 
 > 🚀 **Dogfooding in production:** This is the framework we use to build [Polvera.ai](https://polvera.ai) — an AI-powered study platform for people who want to learn faster.
 
@@ -35,9 +35,9 @@ npx 8x install --platform=agentzero --path=/path/to/agentzero/usr
 
 ## Why 8x?
 
-Traditional development is slow because **you wear all the hats**. 8x Productivity gives you a focused team of 8 agents, each an expert in their domain, working in parallel to ship faster without compromising quality.
+Traditional development is slow because **you wear all the hats**. 8x Productivity gives you a focused team of 9 agents, each an expert in their domain, working in parallel to ship faster without compromising quality.
 
-**8 agents × focused expertise = 8x output**
+**9 agents × focused expertise = 8x output**
 
 ---
 
