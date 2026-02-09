@@ -29,22 +29,6 @@
 - **frontend-developer** implements UI flows using `plan.md`
 - All implementation agents track progress in `plan.md`
 
----
-
-## Progress Tracking Standard
-
-### Feature List as Progress Tracker
-- Each spec folder includes `acceptance-criteria.json` with feature-level pass/fail status
-- Do not declare completion until all items are `pass` with evidence
-- Only **qa-specialist** updates pass/fail status and evidence
-
-### Incremental Progress Principle
-- Work on ONE feature at a time and complete fully before starting the next
-- If delegating work, send only one subtask per sub-agent and wait for completion
-
-### New Session Cold Start
-- New sessions must read `spec.md`, `acceptance-criteria.json`, and `git log --oneline -10` before acting
-
 ### Phase 3: Validation
 - **qa-specialist** reviews against `spec.md` and `acceptance-criteria.json`
 - **security-engineer** reviews security-sensitive changes
@@ -73,6 +57,22 @@
 ### Phase 4: Publish
 - Human (CEO) should approve the outputs of the marketing team
 - When approved, posts will be posted to their respective channels with automations
+
+---
+
+## Progress Tracking Standard
+
+### Feature List as Progress Tracker
+- Each spec folder includes `acceptance-criteria.json` with feature-level pass/fail status
+- Do not declare completion until all items are `pass` with evidence
+- Only **qa-specialist** updates pass/fail status and evidence
+
+### Incremental Progress Principle
+- Work on ONE feature at a time and complete fully before starting the next
+- If delegating work, send only one subtask per sub-agent and wait for completion
+
+### New Session Cold Start
+- New sessions must read `spec.md`, `acceptance-criteria.json`, and `git log --oneline -10` before acting
 
 ---
 
