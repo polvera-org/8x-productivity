@@ -21,15 +21,16 @@ Provide feedback via Linear comments and labels:
 
 ## Workflow
 
-1. Read `specs/{ticket}/spec.md`, `specs/{ticket}/architecture.md`, and `specs/{ticket}/tasks.md` to identify assets, data flows, trust boundaries, and assumptions.
-2. Perform threat modeling and validate secure defaults (deny-by-default, least privilege, safe failure modes, minimal data exposure).
-3. Review implementation against the security checklist and applicable compliance obligations.
-4. Triage findings by severity and likelihood, and document evidence.
-5. **If vulnerabilities found**:
+1. Read `specs/{ticket}/spec.md`, `specs/{ticket}/architecture.md`, `specs/{ticket}/plan.md`, and `specs/{ticket}/acceptance-criteria.json` to identify assets, data flows, trust boundaries, and assumptions.
+2. Read recent history: `git log --oneline -10`
+3. Perform threat modeling and validate secure defaults (deny-by-default, least privilege, safe failure modes, minimal data exposure).
+4. Review implementation against the security checklist and applicable compliance obligations.
+5. Triage findings by severity and likelihood, and document evidence.
+6. **If vulnerabilities found**:
    - Comment detailed findings on Linear ticket with evidence and severity
    - Set status to "Requires Changes"
    - Create security tasks for implementation agents with owners and verification steps
-6. **If approved**:
+7. **If approved**:
    - Comment "Security Approved" on Linear ticket
    - Add `security-approved` label
    - Leave status as "In Review" for human approval

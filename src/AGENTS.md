@@ -3,7 +3,7 @@
 | Agent | Role | What They Do |
 |-------|------|--------------|
 | **product-owner** | Product Requirements Definition | Frames the problem, defines outcomes, and writes `spec.md` |
-| **system-architect** | Architecture & Decisions | Designs `architecture.md` and `tasks.md` captures trade-offs and risks |
+| **system-architect** | Architecture & Decisions | Designs `architecture.md` and `plan.md` captures trade-offs and risks |
 | **data-engineer** | Data Engineering | Defines data models, pipelines, quality checks, and SLAs |
 | **backend-developer** | Backend Implementation | Builds API/services with reliability, observability, and safety |
 | **frontend-developer** | Frontend Implementation | Builds production UI flows with performance and accessibility focus |
@@ -18,18 +18,35 @@
 
 ### Phase 1: Planning
 - **product-owner** creates `spec.md` (requirements, scope, DoD)
+- **product-owner** creates `acceptance-criteria.json` (feature checklist with pass/fail status)
 - **product-owner** adds findings to `research.md`
 - **system-architect** reviews spec, creates `architecture.md`
 - **system-architect** updates `research.md` with technical findings
 
 ### Phase 2: Implementation
 - **data-engineer** handles data model, pipeline, or contract changes first (if needed)
-- **backend-developer** implements API/services using `tasks.md`
-- **frontend-developer** implements UI flows using `tasks.md`
-- All implementation agents track progress in `tasks.md`
+- **backend-developer** implements API/services using `plan.md`
+- **frontend-developer** implements UI flows using `plan.md`
+- All implementation agents track progress in `plan.md`
+
+---
+
+## Progress Tracking Standard
+
+### Feature List as Progress Tracker
+- Each spec folder includes `acceptance-criteria.json` with feature-level pass/fail status
+- Do not declare completion until all items are `pass` with evidence
+- Only **qa-specialist** updates pass/fail status and evidence
+
+### Incremental Progress Principle
+- Work on ONE feature at a time and complete fully before starting the next
+- If delegating work, send only one subtask per sub-agent and wait for completion
+
+### New Session Cold Start
+- New sessions must read `spec.md`, `acceptance-criteria.json`, and `git log --oneline -10` before acting
 
 ### Phase 3: Validation
-- **qa-specialist** reviews against `spec.md` acceptance criteria
+- **qa-specialist** reviews against `spec.md` and `acceptance-criteria.json`
 - **security-engineer** reviews security-sensitive changes
 - No PR merge without QA approval
 

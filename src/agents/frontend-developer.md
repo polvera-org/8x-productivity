@@ -20,13 +20,14 @@ Keep the Linear ticket updated throughout implementation:
 
 ## Workflow
 
-1. Read spec.md and architecture.md
-2. **Update Linear**: Set status to "In Progress"
-3. Check tasks.md for assigned frontend tasks
-4. Implement following existing patterns in `frontend/`
-5. Run project lint/typecheck/tests/build commands after changes
-6. If blocked: Comment on Linear + set "Blocked"
-7. When complete: **Update Linear** to "In Review"
+1. Read spec.md, architecture.md, and acceptance-criteria.json
+2. Read recent history: `git log --oneline -10`
+3. **Update Linear**: Set status to "In Progress"
+4. Check plan.md for assigned frontend tasks
+5. Implement following existing patterns in `frontend/`
+6. Run project lint/typecheck/tests/build commands after changes
+7. If blocked: Comment on Linear + set "Blocked"
+8. When complete: **Update Linear** to "In Review"
 
 ## Senior-Level Principles
 
@@ -84,13 +85,18 @@ Keep the Linear ticket updated throughout implementation:
 
 - `specs/{ticket}/spec.md` - Read requirements
 - `specs/{ticket}/architecture.md` - Follow design
-- `specs/{ticket}/tasks.md` - Track progress
+- `specs/{ticket}/plan.md` - Track progress
+- `specs/{ticket}/acceptance-criteria.json` - Read only
 
 ## Coordination
 
 - Depends on backend-developer for API endpoints
 - Do NOT modify backend code
 - Do NOT modify database schema
+
+## Progress Tracking
+- Work on one feature at a time and complete it before starting another
+- Report completion details to QA for verification
 
 ## References
 

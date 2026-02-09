@@ -21,14 +21,17 @@ Provide feedback via Linear comments and labels:
 
 ## Workflow
 
-1. Review implementation against spec and checklist
-2. Build a risk-based test strategy and coverage map
-3. Validate quality metrics and release criteria
-4. **If issues found**:
+1. Read `specs/{ticket}/spec.md` and `specs/{ticket}/acceptance-criteria.json`
+2. Read recent history: `git log --oneline -10`
+3. Review implementation against spec and checklist
+4. Build a risk-based test strategy and coverage map
+5. Validate quality metrics and release criteria
+6. Update `acceptance-criteria.json` with pass/fail status and evidence
+7. **If issues found**:
    - Comment detailed feedback on Linear ticket
    - Set status to "Requires Changes"
    - Send back to appropriate agent with repro steps
-5. **If approved**:
+8. **If approved**:
    - Comment "QA Approved" on Linear ticket
    - Add `qa-approved` label
    - Leave status as "In Review" for human approval
@@ -100,7 +103,8 @@ Provide bug reports with:
 
 - `specs/{ticket}/spec.md` - Verify acceptance criteria
 - `specs/{ticket}/architecture.md` - Verify design followed
-- `specs/{ticket}/tasks.md` - Verify all tasks complete
+- `specs/{ticket}/plan.md` - Verify all tasks complete
+- `specs/{ticket}/acceptance-criteria.json` - Verify pass/fail status and evidence
 
 ## Coordination
 

@@ -28,7 +28,7 @@ After planning, update the Linear ticket with a summary using `update_issue`.
 2. If found -> get_issue(id) -> review existing context
    If not found -> create_issue(title, team, description, labels=["ai-agents"])
 3. Create spec folder: specs/{LINEAR_ID}-{slug}/
-4. Write spec.md and research.md
+4. Write spec.md, research.md, and acceptance-criteria.json
 5. Update Linear: update_issue(id, description=summary + link)
 6. Hand off to system-architect
 ```
@@ -93,6 +93,7 @@ Use one or more patterns:
 
 - `specs/{ticket}/spec.md` - Create and own
 - `specs/{ticket}/research.md` - Add findings
+- `specs/{ticket}/acceptance-criteria.json` - Create and own
 
 ## Spec.md Structure
 
@@ -143,8 +144,33 @@ Who is impacted, what is the problem, and why it matters now.
 - [ ] Risks reviewed and sign-off captured
 ```
 
+## Acceptance Criteria JSON
+
+Create `acceptance-criteria.json` with a feature checklist and pass/fail status.
+
+Schema:
+```json
+{
+  "features": [
+    {
+      "id": "AC-1",
+      "title": "Short, testable criterion",
+      "status": "fail",
+      "evidence": "",
+      "owner": "product-owner",
+      "lastUpdated": "YYYY-MM-DD"
+    }
+  ]
+}
+```
+
+Rules:
+- Each feature maps to a single acceptance criterion
+- `status` is `pass` or `fail`
+- `evidence` links to tests, screenshots, or notes once passing
+
 ## Coordination
 
 - Hand off to system-architect once spec.md is complete
 - Do NOT make technical architecture decisions
-- Do NOT create tasks.md
+- Do NOT create plan.md

@@ -20,12 +20,13 @@ Keep the Linear ticket updated throughout implementation:
 
 ## Workflow
 
-1. Read spec.md and architecture.md
-2. **Update Linear**: Set status to "In Progress"
-3. Check tasks.md for assigned backend tasks
-4. Implement following domain-driven patterns
-5. If blocked: Comment on Linear + set "Blocked"
-6. When complete: **Update Linear** to "In Review"
+1. Read spec.md, architecture.md, and acceptance-criteria.json
+2. Read recent history: `git log --oneline -10`
+3. **Update Linear**: Set status to "In Progress"
+4. Check plan.md for assigned backend tasks
+5. Implement following domain-driven patterns
+6. If blocked: Comment on Linear + set "Blocked"
+7. When complete: **Update Linear** to "In Review"
 
 ## Engineering Standards
 
@@ -101,7 +102,8 @@ backend/{domain}/
 
 - `specs/{ticket}/spec.md` - Read requirements
 - `specs/{ticket}/architecture.md` - Follow design
-- `specs/{ticket}/tasks.md` - Track progress
+- `specs/{ticket}/plan.md` - Track progress
+- `specs/{ticket}/acceptance-criteria.json` - Read only
 
 ## Coordination
 
@@ -109,3 +111,7 @@ backend/{domain}/
 - Provide API contracts to frontend-developer
 - Do NOT modify schema/migrations directly
 - Do NOT run migrations yourself
+
+## Progress Tracking
+- Work on one feature at a time and complete it before starting another
+- Report completion details to QA for verification

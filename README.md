@@ -67,9 +67,9 @@ Traditional development is slow because **you wear all the hats**. 8x Productivi
 
 ### Phase 2: Implementation
 - **data-engineer** handles data model, pipeline, or contract changes first (if needed)
-- **backend-developer** implements API/services using `tasks.md`
-- **frontend-developer** implements UI flows using `tasks.md`
-- All implementation agents track progress in `tasks.md`
+- **backend-developer** implements API/services using `plan.md`
+- **frontend-developer** implements UI flows using `plan.md`
+- All implementation agents track progress in `plan.md`
 
 ### Phase 3: Validation
 - **qa-specialist** reviews against `spec.md` acceptance criteria
