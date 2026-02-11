@@ -121,13 +121,95 @@ def validate_spec_json(output_path: Path, max_retries: int = 3):
             subprocess.run(["opencode", "run", fix_prompt])
 
 
+def load_spec_steps(spec_path: Path) -> list[dict] | None:
+    """Load spec.json and return ordered steps for quick/deep plans."""
+    spec_file = spec_path / "spec.json"
+    if not spec_file.exists():
+        print(f"spec.json not found at {spec_file}")
+        return None
+
+    try:
+        data = json.loads(spec_file.read_text())
+    except json.JSONDecodeError as exc:
+        print(f"spec.json has invalid JSON: {exc}")
+        return None
+
+    if not isinstance(data, dict) or "plan" not in data:
+        print("spec.json is missing a plan object")
+        return None
+
+    plan = data.get("plan", {})
+    steps: list[dict] = []
+
+    if isinstance(plan, dict) and isinstance(plan.get("steps"), list):
+        for step in plan.get("steps", []):
+            if isinstance(step, dict):
+                steps.append(step)
+        return steps
+
+    if isinstance(plan, dict) and isinstance(plan.get("stages"), list):
+        for stage in plan.get("stages", []):
+            if not isinstance(stage, dict):
+                continue
+            stage_title = stage.get("title")
+            stage_steps = stage.get("steps", [])
+            if not isinstance(stage_steps, list):
+                continue
+            for step in stage_steps:
+                if isinstance(step, dict):
+                    step_copy = dict(step)
+                    if stage_title and "stage_title" not in step_copy:
+                        step_copy["stage_title"] = stage_title
+                    steps.append(step_copy)
+        return steps
+
+    print("spec.json plan must include steps or stages")
+    return None
+
+
 def cmd_implement():
-    """Placeholder for implementation dispatch."""
+    """Dispatch implementation steps with best-practices preamble."""
     spec = pick_spec()
     if not spec:
         return
     print(f"\nSelected: {spec.name}")
-    print("To be implemented")
+
+    prompt_file = PROMPTS_DIR / "implement.md"
+    if not prompt_file.exists():
+        print(f"Prompt file not found: {prompt_file}")
+        sys.exit(1)
+    preamble = prompt_file.read_text().rstrip() + "\n\n"
+
+    steps = load_spec_steps(spec)
+    if not steps:
+        return
+
+    print(f"Found {len(steps)} step(s).")
+    for idx, step in enumerate(steps, start=1):
+        title = step.get("title") or ""
+        goal = step.get("goal") or ""
+        context = step.get("context") or ""
+        instructions = step.get("instructions") or ""
+        verification = step.get("verification") or ""
+        stage_title = step.get("stage_title")
+
+        label = f"Step {idx}/{len(steps)}"
+        if stage_title:
+            label = f"{label} ({stage_title})"
+        print(f"\n{label}: {title}")
+
+        prompt = preamble + (
+            f"Step Title: {title}\n"
+            f"Goal: {goal}\n\n"
+            f"Context:\n{context}\n\n"
+            f"Instructions:\n{instructions}\n\n"
+            f"Verification:\n{verification}\n"
+        )
+
+        result = subprocess.run(["opencode", "run", prompt])
+        if result.returncode != 0:
+            print(f"Step failed with exit code {result.returncode}. Stopping.")
+            return
 
 
 def cmd_review():
