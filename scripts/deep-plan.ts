@@ -1,12 +1,13 @@
-import { askSpecName, loadPrompt, runOpencode, validateSpecJson } from "./lib/specs.ts";
+import { askSpecName, loadConfig, loadPrompt, runAgent, validateSpecJson } from "./lib/specs.ts";
 import path from "node:path";
 
 const task = process.argv.slice(2).join(" ").trim();
 if (!task) {
-  console.error("Usage: npx 8x deep-plan <task description>");
+  console.error("Usage: 8x deep-plan <task description>");
   process.exit(1);
 }
 
+const config = await loadConfig();
 const specPath = await askSpecName(task);
 if (!specPath) process.exit(1);
 
@@ -21,6 +22,6 @@ const userMessage =
 console.log(`\nPlanning (deep-plan)...`);
 console.log(`Output: ${outputPath}\n`);
 
-runOpencode(systemPrompt + "\n\n" + userMessage);
+runAgent(config.deep_plan_command, systemPrompt + "\n\n" + userMessage);
 
-await validateSpecJson(outputPath);
+await validateSpecJson(outputPath, config.deep_plan_command);

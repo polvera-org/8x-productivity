@@ -24,6 +24,10 @@ const printHelp = () => {
   console.log("  8x implement");
   console.log("  8x review");
   console.log("  8x install");
+  console.log("");
+  console.log("Config:");
+  console.log("  ~/.8x/config.json          Global config");
+  console.log("  <project>/.8x/config.json  Project config (takes precedence)");
 };
 
 if (!command || command === "--help" || command === "-h") {

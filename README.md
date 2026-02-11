@@ -1,111 +1,99 @@
 # 8x Productivity
 
-**A CLI that makes solo developers 8x more productive by orchestrating AI agents through a structured Plan -> Implement -> QA workflow.**
+**A CLI that orchestrates AI agents through a structured Plan -> Implement -> QA workflow.**
 
-No fluff. No agent marketplaces. Just four commands that turn a task description into working, reviewed code.
+Four commands turn a task description into working, reviewed code. Each implementation step is executed by a fresh sub-agent with precisely the context it needs — no context rot, no buildup, no 200k-token conversations that forget what they were doing.
 
-> Dogfooding in production: This is the framework we use to build [Polvera.ai](https://polvera.ai) — an AI-powered study platform for people who want to learn faster.
+> Dogfooding in production: This is the framework we use to build [Polvera.ai](https://polvera.ai).
 
 ---
 
 ## How It Works
-
-Every task flows through three phases:
 
 ```
 8x quick-plan "add rate limiting"  -->  spec.json  -->  8x implement  -->  8x review
          (Plan)                                        (Implement)         (QA)
 ```
 
-1. **Plan** — An AI agent explores your codebase, makes all architectural decisions, and produces a `spec.json` with concrete, self-contained steps.
-2. **Implement** — Each step is dispatched to a sub-agent with only the context it needs. Steps run sequentially. No implicit knowledge, no guessing.
-3. **QA** — A review agent checks every acceptance criterion from the spec against the actual changes, reporting pass/fail with evidence.
-
-No task is considered complete until all acceptance criteria pass.
+1. **Plan** — An agent explores the codebase, makes architectural decisions, and produces a `spec.json` with self-contained steps.
+2. **Implement** — Each step is dispatched to a sub-agent with only that step's context, instructions, and verification criteria. Fresh context window per step.
+3. **QA** — A review agent verifies every acceptance criterion against the actual changes.
 
 ---
 
 ## Installation
 
-Requires Node.js >= 18 and [opencode](https://opencode.ai) installed.
+Requires Node.js >= 18 and [opencode](https://opencode.ai).
 
 ```bash
 git clone git@github.com:polvera-org/8x-productivity.git
 cd 8x-productivity
-npm install
-npx 8x install
+npm install && npx 8x install
 ```
-
-This installs `8x` globally. You can now run it from any project directory.
 
 ---
 
 ## Commands
 
-### `8x quick-plan <task>`
+| Command | Description |
+|---------|-------------|
+| `8x quick-plan <task>` | Flat plan for straightforward work (bug fixes, simple features) |
+| `8x deep-plan <task>` | Staged plan for complex work (new features, refactors) |
+| `8x implement` | Execute each step from a spec sequentially. Stops on failure. |
+| `8x review` | Verify acceptance criteria against actual changes. |
 
-For straightforward tasks: bug fixes, simple features, single-concern changes. Produces a flat list of steps with acceptance criteria.
+---
 
-```bash
-8x quick-plan "add rate limiting to the API"
+## Why Sub-Agents Per Step
+
+Long-running agent sessions accumulate context that degrades output quality. 8x solves this by:
+
+- **Isolating each step** in its own agent session with a clean context window
+- **Front-loading decisions** in the planning phase so sub-agents don't need to reason about architecture
+- **Providing exactly the context needed** — file paths, patterns, conventions, constraints — nothing more
+
+The planner sees the full picture. Each implementer sees only its step. The reviewer sees only the acceptance criteria and the diff.
+
+---
+
+## Configuration
+
+All commands default to `opencode run`. Override per-command via config files:
+
+- `~/.8x/config.json` — Global
+- `<project>/.8x/config.json` — Project (takes precedence)
+
+```json
+{
+  "quick_plan_command": "claude -p",
+  "deep_plan_command": "claude -p",
+  "implement_command": "opencode run",
+  "review_command": "opencode run"
+}
 ```
 
-### `8x deep-plan <task>`
-
-For complex, multi-stage work: new features, architectural changes, multi-file refactors. Produces stages with steps, codebase analysis, and per-stage acceptance criteria.
-
-```bash
-8x deep-plan "migrate database from SQLite to PostgreSQL"
-```
-
-### `8x implement`
-
-Picks a spec folder interactively, then executes each step sequentially by dispatching sub-agents. Stops on failure.
-
-```bash
-8x implement
-```
-
-### `8x review`
-
-Picks a spec folder interactively, then dispatches a QA agent that verifies every acceptance criterion against the actual changes.
-
-```bash
-8x review
-```
+All keys are optional. Commands support full shell syntax via `sh -c`.
 
 ---
 
 ## Spec Files
 
-Plans are stored as `specs/<spec-name>/spec.json`. The spec contains everything needed for implementation — no implicit knowledge required.
+Plans live in `specs/<name>/spec.json`. Each step includes:
 
-Each step includes:
-- **title** — What the step does
-- **goal** — What it achieves
-- **context** — Everything the sub-agent needs to know (file paths, patterns, conventions)
+- **context** — Everything the sub-agent needs to know
 - **instructions** — Precise actions to take
 - **verification** — How to confirm success
 
-See [src/AGENTS.md](src/AGENTS.md) for the full spec schema.
+See [src/AGENTS.md](src/AGENTS.md) for the full schema.
 
 ---
 
 ## Philosophy
 
-- **Structured over ad-hoc** — Every task follows Plan -> Implement -> QA. No skipping phases.
-- **Self-contained steps** — Each step's context + instructions must be sufficient for an agent with zero project knowledge.
-- **Concrete over abstract** — Exact file paths and function names, not vague descriptions.
+- **Structured over ad-hoc** — Plan -> Implement -> QA. No skipping phases.
+- **Fresh context per step** — Sub-agents start clean. No context rot.
+- **Concrete over abstract** — Exact file paths, not vague descriptions.
 - **Scope control** — Steps state what to touch and what NOT to touch.
-- **Sequential execution** — Steps run in order. Dependencies are described explicitly.
-
----
-
-## Inspired By
-
-- **get-shit-done** — Bias for action
-- **BMAD** — Structured agent collaboration
-- **Octopuses** — 8 intelligent arms working autonomously
 
 ---
 

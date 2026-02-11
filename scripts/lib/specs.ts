@@ -2,9 +2,64 @@ import { readdir, readFile, mkdir, stat } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import readline from "node:readline/promises";
 import path from "node:path";
+import os from "node:os";
 
 const SPECS_DIR = "specs";
 const PROMPTS_DIR = path.join("src", "prompts");
+
+// ---------------------------------------------------------------------------
+// Config
+// ---------------------------------------------------------------------------
+
+const DEFAULT_COMMAND = "opencode run";
+
+export interface Config {
+  quick_plan_command: string;
+  deep_plan_command: string;
+  implement_command: string;
+  review_command: string;
+}
+
+const DEFAULT_CONFIG: Config = {
+  quick_plan_command: DEFAULT_COMMAND,
+  deep_plan_command: DEFAULT_COMMAND,
+  implement_command: DEFAULT_COMMAND,
+  review_command: DEFAULT_COMMAND,
+};
+
+async function readJsonFile(filePath: string): Promise<Record<string, unknown> | null> {
+  try {
+    const raw = await readFile(filePath, "utf8");
+    const data = JSON.parse(raw);
+    if (typeof data === "object" && data !== null && !Array.isArray(data)) {
+      return data as Record<string, unknown>;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function loadConfig(): Promise<Config> {
+  const globalPath = path.join(os.homedir(), ".8x", "config.json");
+  const projectPath = path.join(process.cwd(), ".8x", "config.json");
+
+  const globalData = await readJsonFile(globalPath);
+  const projectData = await readJsonFile(projectPath);
+
+  const merged = { ...DEFAULT_CONFIG };
+
+  for (const data of [globalData, projectData]) {
+    if (!data) continue;
+    for (const key of Object.keys(DEFAULT_CONFIG) as (keyof Config)[]) {
+      if (typeof data[key] === "string") {
+        merged[key] = data[key] as string;
+      }
+    }
+  }
+
+  return merged;
+}
 
 // ---------------------------------------------------------------------------
 // Spec folder helpers
@@ -233,6 +288,7 @@ export async function loadSpecAcceptanceCriteria(
 
 export async function validateSpecJson(
   outputPath: string,
+  command: string,
   maxRetries = 3,
 ): Promise<void> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -264,22 +320,27 @@ export async function validateSpecJson(
         `Do not change the content, only fix the formatting to make it valid JSON.`;
 
       console.log("Attempting auto-fix...\n");
-      runOpencode(fixPrompt);
+      runAgent(command, fixPrompt);
     }
   }
 }
 
 // ---------------------------------------------------------------------------
-// opencode runner
+// Agent runner
 // ---------------------------------------------------------------------------
 
-export function runOpencode(prompt: string): number {
-  const result = spawnSync("opencode", ["run", prompt], {
+function shellEscape(value: string): string {
+  return "'" + value.replace(/'/g, "'\\''") + "'";
+}
+
+export function runAgent(command: string, prompt: string): number {
+  const fullCommand = `${command} ${shellEscape(prompt)}`;
+  const result = spawnSync("sh", ["-c", fullCommand], {
     stdio: "inherit",
   });
 
   if (result.error) {
-    console.error(`Failed to run opencode: ${result.error.message}`);
+    console.error(`Failed to run command: ${result.error.message}`);
     process.exit(1);
   }
 

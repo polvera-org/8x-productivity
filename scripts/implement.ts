@@ -1,6 +1,7 @@
 import path from "node:path";
-import { pickSpec, loadPrompt, loadSpecSteps, runOpencode } from "./lib/specs.ts";
+import { loadConfig, pickSpec, loadPrompt, loadSpecSteps, runAgent } from "./lib/specs.ts";
 
+const config = await loadConfig();
 const specName = await pickSpec();
 if (!specName) process.exit(1);
 
@@ -35,7 +36,7 @@ for (let idx = 0; idx < steps.length; idx++) {
     `Instructions:\n${instructions}\n\n` +
     `Verification:\n${verification}\n`;
 
-  const exitCode = runOpencode(prompt);
+  const exitCode = runAgent(config.implement_command, prompt);
   if (exitCode !== 0) {
     console.log(`Step failed with exit code ${exitCode}. Stopping.`);
     process.exit(exitCode);
