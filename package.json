@@ -6,7 +6,7 @@
   "bin": {
     "8x": "./index.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "tsx": "^4.19.2"
   },
   "engines": {

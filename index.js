@@ -42,7 +42,8 @@ if (!existsSync(scriptPath)) {
   process.exit(1);
 }
 
-const result = spawnSync("tsx", [scriptPath, ...args], { stdio: "inherit" });
+const tsxBin = path.join(__dirname, "node_modules", ".bin", "tsx");
+const result = spawnSync(tsxBin, [scriptPath, ...args], { stdio: "inherit" });
 
 if (result.error) {
   console.error(result.error.message);
