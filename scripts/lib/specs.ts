@@ -19,15 +19,13 @@ const PROMPTS_DIR = path.join(PACKAGE_ROOT, "src", "prompts");
 const DEFAULT_COMMAND = "opencode run";
 
 export interface Config {
-  quick_plan_command: string;
-  deep_plan_command: string;
+  plan_command: string;
   implement_command: string;
   review_command: string;
 }
 
 const DEFAULT_CONFIG: Config = {
-  quick_plan_command: DEFAULT_COMMAND,
-  deep_plan_command: DEFAULT_COMMAND,
+  plan_command: DEFAULT_COMMAND,
   implement_command: DEFAULT_COMMAND,
   review_command: DEFAULT_COMMAND,
 };

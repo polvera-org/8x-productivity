@@ -8,10 +8,6 @@ Every task flows through three phases: **Plan -> Implement -> QA**.
 
 A planning agent receives the task description and explores the codebase. It produces a single `spec.toon` file in `/specs/<issue_number>-<spec_name>/spec.toon`.
 
-Two planning modes:
-- **deep-plan**: For complex, multi-stage work (new features, architectural changes, multi-file refactors). Produces stages with steps, codebase analysis, and per-stage acceptance criteria.
-- **quick-plan**: For straightforward tasks (bug fixes, simple features, single-concern changes). Produces a flat list of steps with acceptance criteria.
-
 The planning agent makes all architectural decisions upfront. Sub-agents do not make design choices.
 
 ### Phase 2: Implement
@@ -39,33 +35,7 @@ No task is considered complete until all acceptance criteria pass.
 
 All specs live in `/specs/<issue_number>-<spec_name>/spec.toon` using TOON (Token-Oriented Object Notation) format.
 
-### Deep Plan spec.toon
-```toon
-plan:
-  title: kebab-case-name
-  goal: What this plan achieves
-  codebase_analysis:
-    tech_stack: ...
-    relevant_files[N]:
-      - path: ...
-        relevance: ...
-    existing_patterns: ...
-    risks[N]: ...
-  stages[N]:
-    - title: 1 - stage-name
-      goal: What this stage achieves
-      steps[N]:
-        - title: step-name
-          goal: What this step achieves
-          context: Everything the sub-agent needs to know
-          instructions: Precise actions to take
-          verification: How to confirm success
-      acceptance_criteria[N]:
-        - title: Testable assertion
-          requirement: What must be true and how to verify it
-```
-
-### Quick Plan spec.toon
+### Plan spec.toon
 ```toon
 plan:
   title: kebab-case-name

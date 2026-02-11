@@ -11,8 +11,8 @@ Four commands turn a task description into working, reviewed code. Each implemen
 ## How It Works
 
 ```
-8x quick-plan "add rate limiting"  -->  spec.toon  -->  8x implement  -->  8x review
-         (Plan)                                        (Implement)         (QA)
+8x plan "add rate limiting"  -->  spec.toon  -->  8x implement  -->  8x review
+     (Plan)                                       (Implement)         (QA)
 ```
 
 1. **Plan** — An agent explores the codebase, makes architectural decisions, and produces a `spec.toon` with self-contained steps.
@@ -37,8 +37,7 @@ npm install && npx 8x install
 
 | Command | Description |
 |---------|-------------|
-| `8x quick-plan <task>` | Flat plan for straightforward work (bug fixes, simple features) |
-| `8x deep-plan <task>` | Staged plan for complex work (new features, refactors) |
+| `8x plan <task>` | Produce a flat plan for implementation steps and acceptance criteria |
 | `8x implement` | Execute each step from a spec sequentially. Stops on failure. |
 | `8x review` | Verify acceptance criteria against actual changes. |
 
@@ -65,8 +64,7 @@ All commands default to `opencode run`. Override per-command via config files:
 
 ```json
 {
-  "quick_plan_command": "claude -p",
-  "deep_plan_command": "claude -p",
+  "plan_command": "claude -p",
   "implement_command": "opencode run",
   "review_command": "opencode run"
 }

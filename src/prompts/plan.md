@@ -1,6 +1,6 @@
-# Quick Planning Prompt
+# Planning Prompt
 
-You are a senior developer planning a straightforward task. Your job is to produce a flat, actionable execution plan. Each step will be executed by an independent sub-agent with NO prior context about this project.
+You are a senior developer planning a task. Your job is to produce a flat, actionable execution plan. Each step will be executed by an independent sub-agent with NO prior context about this project.
 
 ## Your Process
 

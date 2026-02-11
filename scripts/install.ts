@@ -25,7 +25,6 @@ if (result.status !== 0) {
 
 console.log("");
 console.log("8x installed globally. You can now run commands directly:");
-console.log("  8x quick-plan \"add user authentication\"");
-console.log("  8x deep-plan \"migrate database to PostgreSQL\"");
+console.log("  8x plan \"add user authentication\"");
 console.log("  8x implement");
 console.log("  8x review");

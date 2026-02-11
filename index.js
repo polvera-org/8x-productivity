@@ -12,15 +12,13 @@ const printHelp = () => {
   console.log("Usage: 8x <command> [...arguments]");
   console.log("");
   console.log("Commands:");
-  console.log("  quick-plan <task>   Quick plan for a straightforward task");
-  console.log("  deep-plan  <task>   Deep plan for complex, multi-stage work");
+  console.log("  plan <task>         Plan for a task");
   console.log("  implement           Run implementation steps for a spec");
   console.log("  review              Run QA review for a spec");
   console.log("  install             Install 8x globally");
   console.log("");
   console.log("Examples:");
-  console.log('  8x quick-plan "add user authentication"');
-  console.log('  8x deep-plan "migrate database to PostgreSQL"');
+  console.log('  8x plan "add user authentication"');
   console.log("  8x implement");
   console.log("  8x review");
   console.log("  8x install");
