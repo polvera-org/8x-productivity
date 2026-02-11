@@ -1,86 +1,112 @@
-# The Team
+# 8x Agent System
 
-| Agent | Role | What They Do |
-|-------|------|--------------|
-| **product-owner** | Product Requirements Definition | Frames the problem, defines outcomes, and writes `spec.md` |
-| **system-architect** | Architecture & Decisions | Designs `architecture.md` and `plan.md` captures trade-offs and risks |
-| **data-engineer** | Data Engineering | Defines data models, pipelines, quality checks, and SLAs |
-| **backend-developer** | Backend Implementation | Builds API/services with reliability, observability, and safety |
-| **frontend-developer** | Frontend Implementation | Builds production UI flows with performance and accessibility focus |
-| **qa-specialist** | QA Gate | Runs risk-based validation and release criteria checks |
-| **security-engineer** | Security Validation | Threat models and reviews security-sensitive changes |
-| **writer** | Marketing Content | Writes launch copy, campaigns, and video scripts |
-| **designer** | Visual Design | Creates images, brand assets, and video visuals |
+## 3-Phase Execution Model
 
----
+Every task flows through three phases: **Plan -> Implement -> QA**.
 
-## 4-Phase Software Development Lifecycle
+### Phase 1: Plan
 
-### Phase 1: Planning
-- **product-owner** creates `spec.md` (requirements, scope, DoD)
-- **product-owner** creates `acceptance-criteria.json` (feature checklist with pass/fail status)
-- **product-owner** adds findings to `research.md`
-- **system-architect** reviews spec, creates `architecture.md`
-- **system-architect** updates `research.md` with technical findings
+A planning agent receives the task description and explores the codebase. It produces a single `spec.json` file in `/specs/<issue_number>-<spec_name>/spec.json`.
 
-### Phase 2: Implementation
-- **data-engineer** handles data model, pipeline, or contract changes first (if needed)
-- **backend-developer** implements API/services using `plan.md`
-- **frontend-developer** implements UI flows using `plan.md`
-- All implementation agents track progress in `plan.md`
+Two planning modes:
+- **deep-plan**: For complex, multi-stage work (new features, architectural changes, multi-file refactors). Produces stages with steps, codebase analysis, and per-stage acceptance criteria.
+- **quick-plan**: For straightforward tasks (bug fixes, simple features, single-concern changes). Produces a flat list of steps with acceptance criteria.
 
-### Phase 3: Validation
-- **qa-specialist** reviews against `spec.md` and `acceptance-criteria.json`
-- **security-engineer** reviews security-sensitive changes
-- No PR merge without QA approval
+The planning agent makes all architectural decisions upfront. Sub-agents do not make design choices.
 
-### Phase 4: Completion
-- **product-owner** updates `/docs/` after ticket is approved by the CEO (Human)
-- **writer** Writes concise changelog `/docs/changelogs/` after ticket is merged
+### Phase 2: Implement
+
+For each step in `spec.json`, a sub-agent is dispatched with ONLY that step's `context` and `instructions`. The sub-agent:
+1. Reads the context to understand what exists and what conventions to follow
+2. Executes the instructions precisely
+3. Runs the verification check to confirm success
+
+Steps are executed sequentially. Each step can depend on the output of previous steps, but the dependency must be described explicitly in the step's context.
+
+### Phase 3: QA
+
+After all steps are complete, a QA agent is dispatched. It:
+1. Reads the `acceptance_criteria` from `spec.json`
+2. Reviews `git log` and `git diff` for all changes made during implementation
+3. Runs each acceptance criterion's verification command
+4. Reports pass/fail for each criterion with evidence
+
+No task is considered complete until all acceptance criteria pass.
 
 ---
 
-## 4-Phase Marketing Pipeline
-- Content-driven marketing strategy
+## Spec File Structure
 
-### Phase 1: Research
-- **writer** does daily research and brainstorms social media and blog posts
+All specs live in `/specs/<issue_number>-<spec_name>/spec.json`.
 
-### Phase 2: Planning
-- **orchestrator** selects the best post ideas and updates the CONTENT_CALENDAR.md
-- **writer** creates content plans in /content/{channel}/{content_name}/plan.md based on CONTENT_CALENDAR.md
+### Deep Plan spec.json
+```json
+{
+  "plan": {
+    "title": "kebab-case-name",
+    "goal": "What this plan achieves",
+    "codebase_analysis": {
+      "tech_stack": "...",
+      "relevant_files": [{"path": "...", "relevance": "..."}],
+      "existing_patterns": "...",
+      "risks": ["..."]
+    },
+    "stages": [
+      {
+        "title": "1 - stage-name",
+        "goal": "What this stage achieves",
+        "steps": [
+          {
+            "title": "step-name",
+            "goal": "What this step achieves",
+            "context": "Everything the sub-agent needs to know",
+            "instructions": "Precise actions to take",
+            "verification": "How to confirm success"
+          }
+        ],
+        "acceptance_criteria": [
+          {
+            "title": "Testable assertion",
+            "requirement": "What must be true and how to verify it"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
-### Phase 3: Content Creation
-- **writer** creates the written part of the content and saves it to /content/{channel}/{content_name}/text.md
-- **designer** creates any necessary visual assets for the post, including banners, thumbnails, motion designs if included in the plan.md
-
-### Phase 4: Publish
-- Human (CEO) should approve the outputs of the marketing team
-- When approved, posts will be posted to their respective channels with automations
+### Quick Plan spec.json
+```json
+{
+  "plan": {
+    "title": "kebab-case-name",
+    "goal": "What this plan achieves",
+    "steps": [
+      {
+        "title": "step-name",
+        "goal": "What this step achieves",
+        "context": "Everything the sub-agent needs to know",
+        "instructions": "Precise actions to take",
+        "verification": "How to confirm success"
+      }
+    ],
+    "acceptance_criteria": [
+      {
+        "title": "Testable assertion",
+        "requirement": "What must be true and how to verify it"
+      }
+    ]
+  }
+}
+```
 
 ---
 
-## Progress Tracking Standard
+## Principles
 
-### Feature List as Progress Tracker
-- Each spec folder includes `acceptance-criteria.json` with feature-level pass/fail status
-- Do not declare completion until all items are `pass` with evidence
-- Only **qa-specialist** updates pass/fail status and evidence
-
-### Incremental Progress Principle
-- Work on ONE feature at a time and complete fully before starting the next
-- If delegating work, send only one subtask per sub-agent and wait for completion
-
-### New Session Cold Start
-- New sessions must read `spec.md`, `acceptance-criteria.json`, and `git log --oneline -10` before acting
-
----
-
-# Important Files
-In the root of this project, we'll coordinate the team based on 4 live files:
-- BRAND.md
-- ROADMAP.md
-- PRIORITIES.md
-- CONTENT_CALENDAR.md
-
-The orchestrator should create and maintain these files, ensuring they are always kept up-to-date and aligned with business needs and plans for the near future.
+1. **Self-contained steps**: Each step's context + instructions must be sufficient for a sub-agent with zero project knowledge to execute correctly.
+2. **No implicit knowledge**: File paths, patterns, naming conventions, types -- everything must be explicit.
+3. **Concrete over abstract**: Exact file paths and function names, not vague descriptions.
+4. **Scope control**: Steps state what to touch and what NOT to touch.
+5. **Sequential execution**: Steps run in order. Dependencies between steps must be described explicitly in the dependent step's context.
