@@ -6,7 +6,7 @@ Every task flows through three phases: **Plan -> Implement -> QA**.
 
 ### Phase 1: Plan
 
-A planning agent receives the task description and explores the codebase. It produces a single `spec.json` file in `/specs/<issue_number>-<spec_name>/spec.json`.
+A planning agent receives the task description and explores the codebase. It produces a single `spec.toon` file in `/specs/<issue_number>-<spec_name>/spec.toon`.
 
 Two planning modes:
 - **deep-plan**: For complex, multi-stage work (new features, architectural changes, multi-file refactors). Produces stages with steps, codebase analysis, and per-stage acceptance criteria.
@@ -16,7 +16,7 @@ The planning agent makes all architectural decisions upfront. Sub-agents do not 
 
 ### Phase 2: Implement
 
-For each step in `spec.json`, a sub-agent is dispatched with ONLY that step's `context` and `instructions`. The sub-agent:
+For each step in `spec.toon`, a sub-agent is dispatched with ONLY that step's `context` and `instructions`. The sub-agent:
 1. Reads the context to understand what exists and what conventions to follow
 2. Executes the instructions precisely
 3. Runs the verification check to confirm success
@@ -26,7 +26,7 @@ Steps are executed sequentially. Each step can depend on the output of previous 
 ### Phase 3: QA
 
 After all steps are complete, a QA agent is dispatched. It:
-1. Reads the `acceptance_criteria` from `spec.json`
+1. Reads the `acceptance_criteria` from `spec.toon`
 2. Reviews `git log` and `git diff` for all changes made during implementation
 3. Runs each acceptance criterion's verification command
 4. Reports pass/fail for each criterion with evidence
@@ -37,68 +37,48 @@ No task is considered complete until all acceptance criteria pass.
 
 ## Spec File Structure
 
-All specs live in `/specs/<issue_number>-<spec_name>/spec.json`.
+All specs live in `/specs/<issue_number>-<spec_name>/spec.toon` using TOON (Token-Oriented Object Notation) format.
 
-### Deep Plan spec.json
-```json
-{
-  "plan": {
-    "title": "kebab-case-name",
-    "goal": "What this plan achieves",
-    "codebase_analysis": {
-      "tech_stack": "...",
-      "relevant_files": [{"path": "...", "relevance": "..."}],
-      "existing_patterns": "...",
-      "risks": ["..."]
-    },
-    "stages": [
-      {
-        "title": "1 - stage-name",
-        "goal": "What this stage achieves",
-        "steps": [
-          {
-            "title": "step-name",
-            "goal": "What this step achieves",
-            "context": "Everything the sub-agent needs to know",
-            "instructions": "Precise actions to take",
-            "verification": "How to confirm success"
-          }
-        ],
-        "acceptance_criteria": [
-          {
-            "title": "Testable assertion",
-            "requirement": "What must be true and how to verify it"
-          }
-        ]
-      }
-    ]
-  }
-}
+### Deep Plan spec.toon
+```toon
+plan:
+  title: kebab-case-name
+  goal: What this plan achieves
+  codebase_analysis:
+    tech_stack: ...
+    relevant_files[N]:
+      - path: ...
+        relevance: ...
+    existing_patterns: ...
+    risks[N]: ...
+  stages[N]:
+    - title: 1 - stage-name
+      goal: What this stage achieves
+      steps[N]:
+        - title: step-name
+          goal: What this step achieves
+          context: Everything the sub-agent needs to know
+          instructions: Precise actions to take
+          verification: How to confirm success
+      acceptance_criteria[N]:
+        - title: Testable assertion
+          requirement: What must be true and how to verify it
 ```
 
-### Quick Plan spec.json
-```json
-{
-  "plan": {
-    "title": "kebab-case-name",
-    "goal": "What this plan achieves",
-    "steps": [
-      {
-        "title": "step-name",
-        "goal": "What this step achieves",
-        "context": "Everything the sub-agent needs to know",
-        "instructions": "Precise actions to take",
-        "verification": "How to confirm success"
-      }
-    ],
-    "acceptance_criteria": [
-      {
-        "title": "Testable assertion",
-        "requirement": "What must be true and how to verify it"
-      }
-    ]
-  }
-}
+### Quick Plan spec.toon
+```toon
+plan:
+  title: kebab-case-name
+  goal: What this plan achieves
+  steps[N]:
+    - title: step-name
+      goal: What this step achieves
+      context: Everything the sub-agent needs to know
+      instructions: Precise actions to take
+      verification: How to confirm success
+  acceptance_criteria[N]:
+    - title: Testable assertion
+      requirement: What must be true and how to verify it
 ```
 
 ---

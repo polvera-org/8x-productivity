@@ -1,5 +1,5 @@
 import path from "node:path";
-import { loadConfig, pickSpec, loadPrompt, loadSpecAcceptanceCriteria, runAgent, formatDuration } from "./lib/specs.ts";
+import { loadConfig, pickSpec, loadPrompt, loadSpecAcceptanceCriteria, runAgent, formatDuration, encodeToon } from "./lib/specs.ts";
 
 const config = await loadConfig();
 const specName = await pickSpec();
@@ -15,7 +15,7 @@ if (!criteria) process.exit(1);
 
 console.log(`Found ${criteria.length} acceptance criteria.`);
 
-const prompt = preamble + "Acceptance Criteria:\n" + JSON.stringify(criteria, null, 2);
+const prompt = preamble + "Acceptance Criteria:\n" + encodeToon(criteria);
 
 const startTime = Math.floor(Date.now() / 1000);
 const exitCode = runAgent(config.review_command, prompt);

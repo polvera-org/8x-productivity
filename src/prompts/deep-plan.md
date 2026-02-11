@@ -66,47 +66,39 @@ Rules for acceptance_criteria:
 
 ## Output Format
 
-You MUST output valid JSON and nothing else. No markdown, no commentary, no preamble.
+You MUST output valid TOON (Token-Oriented Object Notation) and nothing else. No markdown, no commentary, no preamble.
 
-```json
-{
-  "plan": {
-    "title": "kebab-case-plan-name",
-    "goal": "One sentence: what this plan achieves when fully executed",
-    "codebase_analysis": {
-      "tech_stack": "e.g., Next.js 14, TypeScript, Prisma, PostgreSQL, Tailwind",
-      "relevant_files": [
-        {
-          "path": "src/routes/users.ts",
-          "relevance": "Pattern to follow for new route"
-        }
-      ],
-      "existing_patterns": "Brief description of how similar features are built in this codebase",
-      "risks": [
-        "Risk description and how the plan mitigates it"
-      ]
-    },
-    "stages": [
-      {
-        "title": "1 - descriptive-stage-name",
-        "goal": "What this stage achieves",
-        "steps": [
-          {
-            "title": "descriptive-step-name",
-            "goal": "What this step achieves in one sentence",
-            "context": "ALL the context the sub-agent needs: relevant file paths, existing code patterns, data shapes, interfaces, naming conventions, dependencies. This is the sub-agent's entire world. Be thorough.",
-            "instructions": "Precise, step-by-step instructions. What to create, what to modify, what to import, what to export. Include exact file paths, function names, types.",
-            "verification": "Concrete command or check to verify this step succeeded. e.g., 'Run npm test and verify 0 failures' or 'Run npx prisma validate and verify no errors'"
-          }
-        ],
-        "acceptance_criteria": [
-          {
-            "title": "Short testable assertion",
-            "requirement": "Precise description of what must be true. Include the command to run or the check to perform."
-          }
-        ]
-      }
-    ]
-  }
-}
+TOON is an indentation-based format (like YAML) that encodes the JSON data model. Key syntax rules:
+- `key: value` for object fields (one space after colon)
+- Nested objects: `key:` on its own line, children indented by 2 spaces
+- Arrays of objects: `key[N]:` header with count, then `- firstField: value` list items with remaining fields indented below
+- Primitive arrays: `key[N]: value1,value2,value3` inline
+- Strings only need quoting if they contain commas, colons, brackets, braces, leading/trailing whitespace, or equal true/false/null
+- No braces, no brackets around objects, no trailing commas
+
+```toon
+plan:
+  title: kebab-case-plan-name
+  goal: One sentence: what this plan achieves when fully executed
+  codebase_analysis:
+    tech_stack: e.g. Next.js 14 TypeScript Prisma PostgreSQL Tailwind
+    relevant_files[N]:
+      - path: src/routes/users.ts
+        relevance: Pattern to follow for new route
+    existing_patterns: Brief description of how similar features are built in this codebase
+    risks[N]: Risk description and how the plan mitigates it
+  stages[N]:
+    - title: 1 - descriptive-stage-name
+      goal: What this stage achieves
+      steps[N]:
+        - title: descriptive-step-name
+          goal: What this step achieves in one sentence
+          context: ALL the context the sub-agent needs. Relevant file paths, existing code patterns, data shapes, interfaces, naming conventions, dependencies. This is the sub-agent's entire world. Be thorough.
+          instructions: Precise step-by-step instructions. What to create, what to modify, what to import, what to export. Include exact file paths, function names, types.
+          verification: Concrete command or check to verify this step succeeded. e.g. run npm test and verify 0 failures or run npx prisma validate and verify no errors
+      acceptance_criteria[N]:
+        - title: Short testable assertion
+          requirement: Precise description of what must be true. Include the command to run or the check to perform.
 ```
+
+Replace every `[N]` with the actual count of items in that array.

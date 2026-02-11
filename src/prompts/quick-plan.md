@@ -38,28 +38,29 @@ Rules for acceptance_criteria:
 
 ## Output Format
 
-You MUST output valid JSON and nothing else. No markdown, no commentary, no preamble.
+You MUST output valid TOON (Token-Oriented Object Notation) and nothing else. No markdown, no commentary, no preamble.
 
-```json
-{
-  "plan": {
-    "title": "kebab-case-plan-name",
-    "goal": "One sentence: what this plan achieves when fully executed",
-    "steps": [
-      {
-        "title": "descriptive-step-name",
-        "goal": "What this step achieves in one sentence",
-        "context": "ALL the context the sub-agent needs. File paths, patterns, data shapes, conventions. This is the sub-agent's entire world.",
-        "instructions": "Precise instructions. What to create, modify, import, export. Exact file paths and function names.",
-        "verification": "Concrete command or check. e.g., 'Run npm test' or 'Verify the file exports the Widget component'"
-      }
-    ],
-    "acceptance_criteria": [
-      {
-        "title": "Short testable assertion",
-        "requirement": "What must be true. Include the command to run or check to perform."
-      }
-    ]
-  }
-}
+TOON is an indentation-based format (like YAML) that encodes the JSON data model. Key syntax rules:
+- `key: value` for object fields (one space after colon)
+- Nested objects: `key:` on its own line, children indented by 2 spaces
+- Arrays of objects: `key[N]:` header with count, then `- firstField: value` list items with remaining fields indented below
+- Primitive arrays: `key[N]: value1,value2,value3` inline
+- Strings only need quoting if they contain commas, colons, brackets, braces, leading/trailing whitespace, or equal true/false/null
+- No braces, no brackets around objects, no trailing commas
+
+```toon
+plan:
+  title: kebab-case-plan-name
+  goal: One sentence: what this plan achieves when fully executed
+  steps[N]:
+    - title: descriptive-step-name
+      goal: What this step achieves in one sentence
+      context: ALL the context the sub-agent needs. File paths, patterns, data shapes, conventions. This is the sub-agent's entire world.
+      instructions: Precise instructions. What to create, modify, import, export. Exact file paths and function names.
+      verification: Concrete command or check. e.g. run npm test or verify the file exports the Widget component
+  acceptance_criteria[N]:
+    - title: Short testable assertion
+      requirement: What must be true. Include the command to run or check to perform.
 ```
+
+Replace `[N]` with the actual count of items in each array.

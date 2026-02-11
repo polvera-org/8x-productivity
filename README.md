@@ -11,11 +11,11 @@ Four commands turn a task description into working, reviewed code. Each implemen
 ## How It Works
 
 ```
-8x quick-plan "add rate limiting"  -->  spec.json  -->  8x implement  -->  8x review
+8x quick-plan "add rate limiting"  -->  spec.toon  -->  8x implement  -->  8x review
          (Plan)                                        (Implement)         (QA)
 ```
 
-1. **Plan** — An agent explores the codebase, makes architectural decisions, and produces a `spec.json` with self-contained steps.
+1. **Plan** — An agent explores the codebase, makes architectural decisions, and produces a `spec.toon` with self-contained steps.
 2. **Implement** — Each step is dispatched to a sub-agent with only that step's context, instructions, and verification criteria. Fresh context window per step.
 3. **QA** — A review agent verifies every acceptance criterion against the actual changes.
 
@@ -78,7 +78,7 @@ All keys are optional. Commands support full shell syntax via `sh -c`.
 
 ## Spec Files
 
-Plans live in `specs/<name>/spec.json`. Each step includes:
+Plans live in `specs/<name>/spec.toon` using [TOON](https://github.com/toon-format/toon) (Token-Oriented Object Notation) format -- a compact, LLM-friendly encoding of the JSON data model that reduces parse errors and token usage. Each step includes:
 
 - **context** — Everything the sub-agent needs to know
 - **instructions** — Precise actions to take

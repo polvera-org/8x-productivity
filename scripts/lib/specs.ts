@@ -1,9 +1,10 @@
 import { readdir, readFile, mkdir, stat } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
+import { spawnSync, spawn } from "node:child_process";
 import readline from "node:readline/promises";
 import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
+import { encode as toonEncode, decode as toonDecode } from "@toon-format/toon";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = path.resolve(__dirname, "..", "..");
@@ -151,7 +152,7 @@ export async function loadPrompt(name: string): Promise<string> {
 }
 
 // ---------------------------------------------------------------------------
-// spec.json loading
+// spec.toon loading
 // ---------------------------------------------------------------------------
 
 interface Step {
@@ -171,32 +172,32 @@ interface Criterion {
   [key: string]: unknown;
 }
 
-async function readSpecJson(
+async function readSpecToon(
   specPath: string,
 ): Promise<Record<string, unknown> | null> {
-  const specFile = path.join(specPath, "spec.json");
+  const specFile = path.join(specPath, "spec.toon");
   let raw: string;
   try {
     raw = await readFile(specFile, "utf8");
   } catch {
-    console.log(`spec.json not found at ${specFile}`);
+    console.log(`spec.toon not found at ${specFile}`);
     return null;
   }
   try {
-    const data = JSON.parse(raw);
+    const data = toonDecode(raw);
     if (typeof data !== "object" || data === null || !("plan" in data)) {
-      console.log("spec.json is missing a plan object");
+      console.log("spec.toon is missing a plan object");
       return null;
     }
     return data as Record<string, unknown>;
   } catch (err) {
-    console.log(`spec.json has invalid JSON: ${err}`);
+    console.log(`spec.toon has invalid TOON: ${err}`);
     return null;
   }
 }
 
 export async function loadSpecSteps(specPath: string): Promise<Step[] | null> {
-  const data = await readSpecJson(specPath);
+  const data = await readSpecToon(specPath);
   if (!data) return null;
 
   const plan = data.plan as Record<string, unknown>;
@@ -227,14 +228,14 @@ export async function loadSpecSteps(specPath: string): Promise<Step[] | null> {
     return steps;
   }
 
-  console.log("spec.json plan must include steps or stages");
+  console.log("spec.toon plan must include steps or stages");
   return null;
 }
 
 export async function loadSpecAcceptanceCriteria(
   specPath: string,
 ): Promise<Criterion[] | null> {
-  const data = await readSpecJson(specPath);
+  const data = await readSpecToon(specPath);
   if (!data) return null;
 
   const plan = data.plan as Record<string, unknown>;
@@ -245,7 +246,7 @@ export async function loadSpecAcceptanceCriteria(
     for (const item of plan.acceptance_criteria) {
       if (typeof item !== "object" || item === null) {
         console.log(
-          "spec.json plan acceptance_criteria must be a list of objects",
+          "spec.toon plan acceptance_criteria must be a list of objects",
         );
         return null;
       }
@@ -258,19 +259,19 @@ export async function loadSpecAcceptanceCriteria(
   if (Array.isArray(plan.stages)) {
     for (const stage of plan.stages) {
       if (typeof stage !== "object" || stage === null) {
-        console.log("spec.json plan stages must be a list of objects");
+        console.log("spec.toon plan stages must be a list of objects");
         return null;
       }
       const s = stage as Record<string, unknown>;
       const stageTitle = s.title as string | undefined;
       if (!Array.isArray(s.acceptance_criteria)) {
-        console.log("spec.json stage acceptance_criteria must be a list");
+        console.log("spec.toon stage acceptance_criteria must be a list");
         return null;
       }
       for (const item of s.acceptance_criteria) {
         if (typeof item !== "object" || item === null) {
           console.log(
-            "spec.json stage acceptance_criteria must be a list of objects",
+            "spec.toon stage acceptance_criteria must be a list of objects",
           );
           return null;
         }
@@ -282,15 +283,15 @@ export async function loadSpecAcceptanceCriteria(
     return criteria;
   }
 
-  console.log("spec.json plan must include acceptance_criteria or stages");
+  console.log("spec.toon plan must include acceptance_criteria or stages");
   return null;
 }
 
 // ---------------------------------------------------------------------------
-// JSON validation with auto-fix retry
+// TOON validation with auto-fix retry
 // ---------------------------------------------------------------------------
 
-export async function validateSpecJson(
+export async function validateSpecToon(
   outputPath: string,
   command: string,
   maxRetries = 3,
@@ -300,34 +301,43 @@ export async function validateSpecJson(
     try {
       raw = await readFile(outputPath, "utf8");
     } catch {
-      console.log(`spec.json was not created at ${outputPath}`);
+      console.log(`spec.toon was not created at ${outputPath}`);
       return;
     }
 
     try {
-      JSON.parse(raw);
-      console.log("spec.json is valid.");
+      toonDecode(raw);
+      console.log("spec.toon is valid.");
       return;
     } catch (err) {
       console.log(
-        `\nspec.json has invalid JSON (attempt ${attempt}/${maxRetries}): ${err}`,
+        `\nspec.toon has invalid TOON (attempt ${attempt}/${maxRetries}): ${err}`,
       );
       if (attempt === maxRetries) {
-        console.log("Max retries reached. Please fix the JSON manually.");
+        console.log("Max retries reached. Please fix the TOON manually.");
         return;
       }
 
       const fixPrompt =
-        `The file at ${outputPath} contains invalid JSON.\n` +
+        `The file at ${outputPath} contains invalid TOON.\n` +
         `Error: ${err}\n\n` +
-        `Read the file, fix ONLY the JSON syntax error, and save it back to ${outputPath}. ` +
-        `Do not change the content, only fix the formatting to make it valid JSON.`;
+        `Read the file, fix ONLY the TOON syntax error, and save it back to ${outputPath}. ` +
+        `Do not change the content, only fix the formatting to make it valid TOON.\n\n` +
+        `TOON syntax rules: indentation-based nesting (2-space indent), key: value pairs, ` +
+        `arrays declared with key[N]: header (N = item count), list items start with "- ", ` +
+        `minimal quoting (only quote values containing commas, colons, brackets, or leading/trailing whitespace).`;
 
       console.log("Attempting auto-fix...\n");
       runAgent(command, fixPrompt);
     }
   }
 }
+
+// ---------------------------------------------------------------------------
+// TOON encoding (re-export for use in command scripts)
+// ---------------------------------------------------------------------------
+
+export { toonEncode as encodeToon };
 
 // ---------------------------------------------------------------------------
 // Timing
@@ -361,4 +371,57 @@ export function runAgent(command: string, prompt: string): number {
   }
 
   return result.status ?? 1;
+}
+
+// ---------------------------------------------------------------------------
+// Async agent runner (for use with progress display)
+// ---------------------------------------------------------------------------
+
+export interface RunAgentAsyncOptions {
+  onStdout?: (chunk: string) => void;
+  onStderr?: (chunk: string) => void;
+}
+
+export function runAgentAsync(
+  command: string,
+  prompt: string,
+  options?: RunAgentAsyncOptions,
+): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const fullCommand = `${command} ${shellEscape(prompt)}`;
+    const child = spawn("sh", ["-c", fullCommand], {
+      stdio: ["inherit", "pipe", "pipe"],
+      env: {
+        ...process.env,
+        FORCE_COLOR: "1",
+        CLICOLOR_FORCE: "1",
+      },
+    });
+
+    child.stdout?.on("data", (chunk: Buffer) => {
+      const text = chunk.toString();
+      if (options?.onStdout) {
+        options.onStdout(text);
+      } else {
+        process.stdout.write(text);
+      }
+    });
+
+    child.stderr?.on("data", (chunk: Buffer) => {
+      const text = chunk.toString();
+      if (options?.onStderr) {
+        options.onStderr(text);
+      } else {
+        process.stderr.write(text);
+      }
+    });
+
+    child.on("close", (code) => {
+      resolve(code ?? 1);
+    });
+
+    child.on("error", (err) => {
+      reject(err);
+    });
+  });
 }
