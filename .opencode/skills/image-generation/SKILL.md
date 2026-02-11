@@ -23,13 +23,6 @@ Providers:
 
 Run scripts using an absolute path (do NOT cd to the skill directory first). Always run from the user's working directory so outputs land where they are working.
 
-If the user does not specify an API key, assume the runtime already has secrets loaded (e.g., via framework secret storage or environment loading). Do NOT read `.env` directly.
-
-If you need to run a command in a shell that already loads environment variables, you can use:
-```bash
-bash -lc "set -a; source .env; set +a; <command>"
-```
-
 **Generate new image (nano-banana-pro):**
 ```bash
 uv run /absolute/path/to/src/skills/image-generation/providers/nano-banana-pro.py --prompt "your image description" --filename "output-name.png" [--resolution 1K|2K|4K] [--api-key KEY]
@@ -77,8 +70,6 @@ Map user requests to API parameters:
 
 - Nano Banana Pro uses `GEMINI_API_KEY` or `--api-key`
 - OpenAI uses `OPENAI_API_KEY` or `--api-key`
-- If no key is provided, rely on existing secret storage or environment loading; do not read `.env` directly
-- If a shell command needs environment variables loaded, use `bash -lc "set -a; source .env; set +a; <command>"`
 
 ## Prompt Handling
 

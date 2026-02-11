@@ -1,9 +1,5 @@
-.opencode/
-.claude/
-.cursor/
 .env
 node_modules/
 ref/
 references/
 specs/
-**/__pycache__/
