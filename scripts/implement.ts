@@ -1,5 +1,5 @@
 import path from "node:path";
-import { loadConfig, pickSpec, loadPrompt, loadSpecSteps, runAgent } from "./lib/specs.ts";
+import { loadConfig, pickSpec, loadPrompt, loadSpecSteps, runAgent, formatDuration } from "./lib/specs.ts";
 
 const config = await loadConfig();
 const specName = await pickSpec();
@@ -14,6 +14,8 @@ const steps = await loadSpecSteps(specPath);
 if (!steps) process.exit(1);
 
 console.log(`Found ${steps.length} step(s).`);
+
+const overallStart = Math.floor(Date.now() / 1000);
 
 for (let idx = 0; idx < steps.length; idx++) {
   const step = steps[idx];
@@ -36,9 +38,17 @@ for (let idx = 0; idx < steps.length; idx++) {
     `Instructions:\n${instructions}\n\n` +
     `Verification:\n${verification}\n`;
 
+  const stepStart = Math.floor(Date.now() / 1000);
   const exitCode = runAgent(config.implement_command, prompt);
+  const stepEnd = Math.floor(Date.now() / 1000);
+
+  console.log(`${label} completed in ${formatDuration(stepStart, stepEnd)}`);
+
   if (exitCode !== 0) {
     console.log(`Step failed with exit code ${exitCode}. Stopping.`);
     process.exit(exitCode);
   }
 }
+
+const overallEnd = Math.floor(Date.now() / 1000);
+console.log(`\nimplement completed in ${formatDuration(overallStart, overallEnd)}`);

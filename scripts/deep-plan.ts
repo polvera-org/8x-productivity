@@ -1,4 +1,4 @@
-import { askSpecName, loadConfig, loadPrompt, runAgent, validateSpecJson } from "./lib/specs.ts";
+import { askSpecName, loadConfig, loadPrompt, runAgent, validateSpecJson, formatDuration } from "./lib/specs.ts";
 import path from "node:path";
 
 const task = process.argv.slice(2).join(" ").trim();
@@ -22,6 +22,10 @@ const userMessage =
 console.log(`\nPlanning (deep-plan)...`);
 console.log(`Output: ${outputPath}\n`);
 
+const startTime = Math.floor(Date.now() / 1000);
 runAgent(config.deep_plan_command, systemPrompt + "\n\n" + userMessage);
 
 await validateSpecJson(outputPath, config.deep_plan_command);
+const endTime = Math.floor(Date.now() / 1000);
+
+console.log(`\ndeep-plan completed in ${formatDuration(startTime, endTime)}`);

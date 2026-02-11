@@ -330,6 +330,18 @@ export async function validateSpecJson(
 }
 
 // ---------------------------------------------------------------------------
+// Timing
+// ---------------------------------------------------------------------------
+
+export function formatDuration(startSec: number, endSec: number): string {
+  const total = endSec - startSec;
+  const mins = Math.floor(total / 60);
+  const secs = Math.floor(total % 60);
+  if (mins > 0) return `${mins}m${secs.toString().padStart(2, "0")}s`;
+  return `${secs}s`;
+}
+
+// ---------------------------------------------------------------------------
 // Agent runner
 // ---------------------------------------------------------------------------
 
