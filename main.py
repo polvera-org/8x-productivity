@@ -167,6 +167,58 @@ def load_spec_steps(spec_path: Path) -> list[dict] | None:
     return None
 
 
+def load_spec_acceptance_criteria(spec_path: Path) -> list[dict] | None:
+    """Load spec.json and return acceptance criteria for quick/deep plans."""
+    spec_file = spec_path / "spec.json"
+    if not spec_file.exists():
+        print(f"spec.json not found at {spec_file}")
+        return None
+
+    try:
+        data = json.loads(spec_file.read_text())
+    except json.JSONDecodeError as exc:
+        print(f"spec.json has invalid JSON: {exc}")
+        return None
+
+    if not isinstance(data, dict) or "plan" not in data:
+        print("spec.json is missing a plan object")
+        return None
+
+    plan = data.get("plan", {})
+    criteria: list[dict] = []
+
+    if isinstance(plan, dict) and isinstance(plan.get("acceptance_criteria"), list):
+        for item in plan.get("acceptance_criteria", []):
+            if not isinstance(item, dict):
+                print("spec.json plan acceptance_criteria must be a list of objects")
+                return None
+            criteria.append(item)
+        return criteria
+
+    if isinstance(plan, dict) and isinstance(plan.get("stages"), list):
+        for stage in plan.get("stages", []):
+            if not isinstance(stage, dict):
+                print("spec.json plan stages must be a list of objects")
+                return None
+            stage_title = stage.get("title")
+            stage_criteria = stage.get("acceptance_criteria")
+            if not isinstance(stage_criteria, list):
+                print("spec.json stage acceptance_criteria must be a list")
+                return None
+            for item in stage_criteria:
+                if not isinstance(item, dict):
+                    print("spec.json stage acceptance_criteria must be a list of objects")
+                    return None
+                item_copy = dict(item)
+                if stage_title and "stage_title" not in item_copy:
+                    item_copy["stage_title"] = stage_title
+                criteria.append(item_copy)
+        return criteria
+
+    print("spec.json plan must include acceptance_criteria or stages")
+    return None
+
+
 def cmd_implement():
     """Dispatch implementation steps with best-practices preamble."""
     spec = pick_spec()
@@ -218,7 +270,24 @@ def cmd_review():
     if not spec:
         return
     print(f"\nSelected: {spec.name}")
-    print("To be implemented")
+
+    prompt_file = PROMPTS_DIR / "review.md"
+    if not prompt_file.exists():
+        print(f"Prompt file not found: {prompt_file}")
+        sys.exit(1)
+    preamble = prompt_file.read_text().rstrip() + "\n\n"
+
+    criteria = load_spec_acceptance_criteria(spec)
+    if not criteria:
+        return
+
+    print(f"Found {len(criteria)} acceptance criteria.")
+    prompt = preamble + "Acceptance Criteria:\n" + json.dumps(criteria, indent=2)
+
+    result = subprocess.run(["opencode", "run", prompt])
+    if result.returncode != 0:
+        print(f"Review failed with exit code {result.returncode}. Stopping.")
+        return
 
 
 def main():
