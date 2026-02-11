@@ -3,9 +3,13 @@ import { spawnSync } from "node:child_process";
 import readline from "node:readline/promises";
 import path from "node:path";
 import os from "node:os";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PACKAGE_ROOT = path.resolve(__dirname, "..", "..");
 
 const SPECS_DIR = "specs";
-const PROMPTS_DIR = path.join("src", "prompts");
+const PROMPTS_DIR = path.join(PACKAGE_ROOT, "src", "prompts");
 
 // ---------------------------------------------------------------------------
 // Config
