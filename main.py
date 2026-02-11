@@ -2,6 +2,7 @@
 """8x planning CLI - Plan, Implement, Review."""
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -83,12 +84,41 @@ def run_plan(mode: str, task: str):
 
     cmd = [
         "opencode", "run",
-        "--prompt", system_prompt + "\n\n" + user_message,
+        system_prompt + "\n\n" + user_message,
     ]
 
     print(f"\nPlanning ({mode})...")
     print(f"Output: {output_path}\n")
     subprocess.run(cmd)
+
+    validate_spec_json(output_path)
+
+
+def validate_spec_json(output_path: Path, max_retries: int = 3):
+    """Parse the spec.json and retry with opencode if invalid."""
+    for attempt in range(1, max_retries + 1):
+        if not output_path.exists():
+            print(f"spec.json was not created at {output_path}")
+            return
+
+        try:
+            json.loads(output_path.read_text())
+            print(f"spec.json is valid.")
+            return
+        except json.JSONDecodeError as e:
+            print(f"\nspec.json has invalid JSON (attempt {attempt}/{max_retries}): {e}")
+            if attempt == max_retries:
+                print("Max retries reached. Please fix the JSON manually.")
+                return
+
+            fix_prompt = (
+                f"The file at {output_path} contains invalid JSON.\n"
+                f"Error: {e}\n\n"
+                f"Read the file, fix ONLY the JSON syntax error, and save it back to {output_path}. "
+                f"Do not change the content, only fix the formatting to make it valid JSON."
+            )
+            print("Attempting auto-fix...\n")
+            subprocess.run(["opencode", "run", fix_prompt])
 
 
 def cmd_implement():
