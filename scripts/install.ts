@@ -167,10 +167,8 @@ const updateOpencodeAgents = async (agentsDir: string) => {
 const scaffoldAgentZero = async (
   sourceAgentsDir: string,
   targetAgentsDir: string,
-  communicationPromptPath: string,
 ) => {
   await ensureDir(targetAgentsDir);
-  const communicationPrompt = await readFile(communicationPromptPath, "utf8");
   const entries = await readdir(sourceAgentsDir, { withFileTypes: true });
   const agentFiles = entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
@@ -208,11 +206,6 @@ const scaffoldAgentZero = async (
       roleFile,
       "utf8",
     );
-    await writeFile(
-      path.join(promptsDir, "agent.system.main.communication.md"),
-      communicationPrompt,
-      "utf8",
-    );
   }
 };
 
@@ -229,18 +222,6 @@ const run = async () => {
   const sourceAgentsDir = path.join(repoRoot, "src", "agents");
   const skillsSourceDir = path.join(repoRoot, "src", "skills");
   const referencesSourceDir = path.join(repoRoot, "src", "references");
-  const communicationPromptPath = path.join(
-    repoRoot,
-    "src",
-    "prompts",
-    "agent.system.main.communication.md",
-  );
-
-  if (!(await fileExists(communicationPromptPath))) {
-    throw new Error(
-      `Missing communication prompt: ${communicationPromptPath}`,
-    );
-  }
 
   const args = parseArgs(process.argv.slice(2));
   const rl = readline.createInterface({
@@ -336,7 +317,6 @@ const run = async () => {
     await scaffoldAgentZero(
       sourceAgentsDir,
       agentsDir,
-      communicationPromptPath,
     );
     await copyDirContents(skillsSourceDir, skillsDir);
     rl.close();
