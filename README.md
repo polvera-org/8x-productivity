@@ -66,11 +66,14 @@ All commands default to `opencode run`. Override per-command via config files:
 {
   "plan_command": "claude -p",
   "implement_command": "opencode run",
-  "review_command": "opencode run"
+  "review_command": "opencode run",
+  "commit_prefix": "feat:"
 }
 ```
 
 All keys are optional. Commands support full shell syntax via `sh -c`.
+
+After each implementation step completes successfully, 8x automatically commits the changes. The commit message is the step title with dashes replaced by spaces (e.g., step `add-rate-limiting` becomes commit message `add rate limiting`). Set `commit_prefix` to prepend a string to all auto-commit messages — useful for ticket numbers or conventional commit prefixes. Defaults to empty string (no prefix).
 
 ---
 

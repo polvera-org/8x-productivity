@@ -1,4 +1,5 @@
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 import { loadConfig, pickSpec, loadPrompt, loadSpecSteps, runAgentAsync, formatDuration } from "./lib/specs.ts";
 import { StickyFooter, renderStepProgress, type StepState } from "./lib/progress.ts";
 
@@ -114,6 +115,33 @@ for (let idx = 0; idx < loadedSteps.length; idx++) {
     footer.writeOutput(`${label} completed in ${stepDuration}\n`);
   } else {
     console.log(`${label} completed in ${stepDuration}`);
+  }
+
+  // Auto-commit changes for this step
+  const commitMsg =
+    (config.commit_prefix ? config.commit_prefix + " " : "") +
+    title.replace(/-/g, " ");
+
+  const addResult = spawnSync("git", ["add", "-A"], { stdio: "pipe" });
+  if (addResult.status === 0) {
+    const commitResult = spawnSync("git", ["commit", "-m", commitMsg], {
+      stdio: "pipe",
+    });
+    if (commitResult.status === 0) {
+      const msg = `Committed: ${commitMsg}`;
+      if (useTTY) {
+        footer.writeOutput(`${msg}\n`);
+      } else {
+        console.log(msg);
+      }
+    } else {
+      const msg = `No changes to commit for step: ${title}`;
+      if (useTTY) {
+        footer.writeOutput(`${msg}\n`);
+      } else {
+        console.log(msg);
+      }
+    }
   }
 }
 

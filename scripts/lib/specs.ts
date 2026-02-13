@@ -22,12 +22,14 @@ export interface Config {
   plan_command: string;
   implement_command: string;
   review_command: string;
+  commit_prefix: string;
 }
 
 const DEFAULT_CONFIG: Config = {
   plan_command: DEFAULT_COMMAND,
   implement_command: DEFAULT_COMMAND,
   review_command: DEFAULT_COMMAND,
+  commit_prefix: "",
 };
 
 async function readJsonFile(filePath: string): Promise<Record<string, unknown> | null> {
