@@ -6,7 +6,10 @@ Every task flows through three phases: **Plan -> Implement -> QA**.
 
 ### Phase 1: Plan
 
-A planning agent receives the task description and explores the codebase. It produces a single `spec.toon` file in `/specs/<issue_number>-<spec_name>/spec.toon`.
+A planning agent receives the task description and explores the codebase. It produces two files in `/specs/<issue_number>-<spec_name>/`:
+
+- **`spec.toon`** — The machine-readable execution plan consumed by sub-agents.
+- **`spec.md`** — A human-readable summary of the plan for reviewer approval before implementation begins.
 
 The planning agent makes all architectural decisions upfront. Sub-agents do not make design choices.
 
@@ -33,7 +36,10 @@ No task is considered complete until all acceptance criteria pass.
 
 ## Spec File Structure
 
-All specs live in `/specs/<issue_number>-<spec_name>/spec.toon` using TOON (Token-Oriented Object Notation) format.
+All specs live in `/specs/<issue_number>-<spec_name>/` and contain two files:
+
+- `spec.toon` — The execution plan in TOON (Token-Oriented Object Notation) format, consumed by sub-agents.
+- `spec.md` — A human-readable markdown summary of the plan for review and approval.
 
 ### Plan spec.toon
 ```toon

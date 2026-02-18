@@ -28,6 +28,37 @@ Rules for acceptance_criteria:
 - Testable assertions that a QA agent can verify by reading code and running commands
 - Cover both functionality ("returns correct data") and quality ("no type errors", "tests pass")
 
+### Step 3: Write the Human-Readable Summary
+
+After writing the plan, create a `spec.md` file in the same directory as `spec.toon`. This is a plain-English summary meant for a human reviewer to approve the plan before implementation begins.
+
+The `spec.md` must follow this structure:
+
+```markdown
+# <Plan Title>
+
+## Goal
+
+<One sentence describing what this plan achieves when fully executed.>
+
+## Steps
+
+1. **<step-title>** — <step goal>. <1-2 sentence summary of what will be done and why.>
+2. **<step-title>** — <step goal>. <1-2 sentence summary of what will be done and why.>
+...
+
+## Acceptance Criteria
+
+- [ ] <criterion title>: <requirement>
+- [ ] <criterion title>: <requirement>
+...
+```
+
+Rules for spec.md:
+- Write for a human reviewer, not a machine. No TOON syntax, no sub-agent context dumps.
+- Each step summary should convey *what* and *why* in plain language, omitting implementation-level details like exact function signatures or import paths.
+- Acceptance criteria should read as a checklist a reviewer can mentally walk through.
+
 ## Critical Principles
 
 1. **Self-contained steps**: The sub-agent must be able to execute with ONLY the step's context and instructions. No questions, no guessing.
