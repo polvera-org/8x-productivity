@@ -4,7 +4,7 @@ import readline from "node:readline/promises";
 import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
-import { encode as toonEncode, decode as toonDecode } from "@toon-format/toon";
+import { XMLParser, XMLBuilder } from "fast-xml-parser";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = path.resolve(__dirname, "..", "..");
@@ -152,8 +152,15 @@ export async function loadPrompt(name: string): Promise<string> {
 }
 
 // ---------------------------------------------------------------------------
-// spec.toon loading
+// spec.xml loading
 // ---------------------------------------------------------------------------
+
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  processEntities: true,
+  isArray: (tagName) =>
+    tagName === "step" || tagName === "criterion",
+});
 
 interface Step {
   title?: string;
@@ -161,137 +168,98 @@ interface Step {
   context?: string;
   instructions?: string;
   verification?: string;
-  stage_title?: string;
   [key: string]: unknown;
 }
 
 interface Criterion {
   title?: string;
   requirement?: string;
-  stage_title?: string;
   [key: string]: unknown;
 }
 
-async function readSpecToon(
+async function readSpecXml(
   specPath: string,
 ): Promise<Record<string, unknown> | null> {
-  const specFile = path.join(specPath, "spec.toon");
+  const specFile = path.join(specPath, "spec.xml");
   let raw: string;
   try {
     raw = await readFile(specFile, "utf8");
   } catch {
-    console.log(`spec.toon not found at ${specFile}`);
+    console.log(`spec.xml not found at ${specFile}`);
     return null;
   }
   try {
-    const data = toonDecode(raw);
+    const data = xmlParser.parse(raw);
     if (typeof data !== "object" || data === null || !("plan" in data)) {
-      console.log("spec.toon is missing a plan object");
+      console.log("spec.xml is missing a <plan> root element");
       return null;
     }
     return data as Record<string, unknown>;
   } catch (err) {
-    console.log(`spec.toon has invalid TOON: ${err}`);
+    console.log(`spec.xml has invalid XML: ${err}`);
     return null;
   }
 }
 
 export async function loadSpecSteps(specPath: string): Promise<Step[] | null> {
-  const data = await readSpecToon(specPath);
+  const data = await readSpecXml(specPath);
   if (!data) return null;
 
   const plan = data.plan as Record<string, unknown>;
+  const stepsContainer = plan.steps as Record<string, unknown> | undefined;
+
+  if (
+    !stepsContainer ||
+    typeof stepsContainer !== "object" ||
+    !Array.isArray(stepsContainer.step)
+  ) {
+    console.log("spec.xml <plan> must include a <steps> element with <step> children");
+    return null;
+  }
+
   const steps: Step[] = [];
-
-  // Flat steps
-  if (Array.isArray(plan.steps)) {
-    for (const step of plan.steps) {
-      if (typeof step === "object" && step !== null) steps.push(step as Step);
-    }
-    return steps;
+  for (const step of stepsContainer.step) {
+    if (typeof step === "object" && step !== null) steps.push(step as Step);
   }
-
-  // Staged steps
-  if (Array.isArray(plan.stages)) {
-    for (const stage of plan.stages) {
-      if (typeof stage !== "object" || stage === null) continue;
-      const s = stage as Record<string, unknown>;
-      const stageTitle = s.title as string | undefined;
-      if (!Array.isArray(s.steps)) continue;
-      for (const step of s.steps) {
-        if (typeof step !== "object" || step === null) continue;
-        const copy: Step = { ...(step as Step) };
-        if (stageTitle && !copy.stage_title) copy.stage_title = stageTitle;
-        steps.push(copy);
-      }
-    }
-    return steps;
-  }
-
-  console.log("spec.toon plan must include steps or stages");
-  return null;
+  return steps;
 }
 
 export async function loadSpecAcceptanceCriteria(
   specPath: string,
 ): Promise<Criterion[] | null> {
-  const data = await readSpecToon(specPath);
+  const data = await readSpecXml(specPath);
   if (!data) return null;
 
   const plan = data.plan as Record<string, unknown>;
+  const acContainer = plan.acceptance_criteria as Record<string, unknown> | undefined;
+
+  if (
+    !acContainer ||
+    typeof acContainer !== "object" ||
+    !Array.isArray(acContainer.criterion)
+  ) {
+    console.log(
+      "spec.xml <plan> must include an <acceptance_criteria> element with <criterion> children",
+    );
+    return null;
+  }
+
   const criteria: Criterion[] = [];
-
-  // Flat acceptance_criteria
-  if (Array.isArray(plan.acceptance_criteria)) {
-    for (const item of plan.acceptance_criteria) {
-      if (typeof item !== "object" || item === null) {
-        console.log(
-          "spec.toon plan acceptance_criteria must be a list of objects",
-        );
-        return null;
-      }
-      criteria.push(item as Criterion);
+  for (const item of acContainer.criterion) {
+    if (typeof item !== "object" || item === null) {
+      console.log("spec.xml <criterion> entries must be valid elements");
+      return null;
     }
-    return criteria;
+    criteria.push(item as Criterion);
   }
-
-  // Staged acceptance_criteria
-  if (Array.isArray(plan.stages)) {
-    for (const stage of plan.stages) {
-      if (typeof stage !== "object" || stage === null) {
-        console.log("spec.toon plan stages must be a list of objects");
-        return null;
-      }
-      const s = stage as Record<string, unknown>;
-      const stageTitle = s.title as string | undefined;
-      if (!Array.isArray(s.acceptance_criteria)) {
-        console.log("spec.toon stage acceptance_criteria must be a list");
-        return null;
-      }
-      for (const item of s.acceptance_criteria) {
-        if (typeof item !== "object" || item === null) {
-          console.log(
-            "spec.toon stage acceptance_criteria must be a list of objects",
-          );
-          return null;
-        }
-        const copy: Criterion = { ...(item as Criterion) };
-        if (stageTitle && !copy.stage_title) copy.stage_title = stageTitle;
-        criteria.push(copy);
-      }
-    }
-    return criteria;
-  }
-
-  console.log("spec.toon plan must include acceptance_criteria or stages");
-  return null;
+  return criteria;
 }
 
 // ---------------------------------------------------------------------------
-// TOON validation with auto-fix retry
+// XML validation with auto-fix retry
 // ---------------------------------------------------------------------------
 
-export async function validateSpecToon(
+export async function validateSpecXml(
   outputPath: string,
   command: string,
   maxRetries = 3,
@@ -301,31 +269,31 @@ export async function validateSpecToon(
     try {
       raw = await readFile(outputPath, "utf8");
     } catch {
-      console.log(`spec.toon was not created at ${outputPath}`);
+      console.log(`spec.xml was not created at ${outputPath}`);
       return;
     }
 
     try {
-      toonDecode(raw);
-      console.log("spec.toon is valid.");
+      xmlParser.parse(raw);
+      console.log("spec.xml is valid.");
       return;
     } catch (err) {
       console.log(
-        `\nspec.toon has invalid TOON (attempt ${attempt}/${maxRetries}): ${err}`,
+        `\nspec.xml has invalid XML (attempt ${attempt}/${maxRetries}): ${err}`,
       );
       if (attempt === maxRetries) {
-        console.log("Max retries reached. Please fix the TOON manually.");
+        console.log("Max retries reached. Please fix the XML manually.");
         return;
       }
 
       const fixPrompt =
-        `The file at ${outputPath} contains invalid TOON.\n` +
+        `The file at ${outputPath} contains invalid XML.\n` +
         `Error: ${err}\n\n` +
-        `Read the file, fix ONLY the TOON syntax error, and save it back to ${outputPath}. ` +
-        `Do not change the content, only fix the formatting to make it valid TOON.\n\n` +
-        `TOON syntax rules: indentation-based nesting (2-space indent), key: value pairs, ` +
-        `arrays declared with key[N]: header (N = item count), list items start with "- ", ` +
-        `minimal quoting (only quote values containing commas, colons, brackets, or leading/trailing whitespace).`;
+        `Read the file, fix ONLY the XML syntax error, and save it back to ${outputPath}. ` +
+        `Do not change the content, only fix the formatting to make it valid XML.\n\n` +
+        `XML rules: proper opening/closing tags, CDATA sections for content with special characters ` +
+        `(<![CDATA[...]]>), proper entity escaping for & < > outside of CDATA, ` +
+        `and a single <plan> root element.`;
 
       console.log("Attempting auto-fix...\n");
       runAgent(command, fixPrompt);
@@ -334,10 +302,19 @@ export async function validateSpecToon(
 }
 
 // ---------------------------------------------------------------------------
-// TOON encoding (re-export for use in command scripts)
+// XML encoding (for use in command scripts)
 // ---------------------------------------------------------------------------
 
-export { toonEncode as encodeToon };
+const xmlBuilder = new XMLBuilder({
+  format: true,
+  indentBy: "  ",
+  processEntities: true,
+  cdataPropName: "__cdata",
+});
+
+export function encodeXml(data: unknown): string {
+  return xmlBuilder.build(data) as string;
+}
 
 // ---------------------------------------------------------------------------
 // Timing

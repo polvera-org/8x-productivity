@@ -30,7 +30,7 @@ Rules for acceptance_criteria:
 
 ### Step 3: Write the Human-Readable Summary
 
-After writing the plan, create a `spec.md` file in the same directory as `spec.toon`. This is a plain-English summary meant for a human reviewer to approve the plan before implementation begins.
+After writing the plan, create a `spec.md` file in the same directory as `spec.xml`. This is a plain-English summary meant for a human reviewer to approve the plan before implementation begins.
 
 The `spec.md` must follow this structure:
 
@@ -55,7 +55,7 @@ The `spec.md` must follow this structure:
 ```
 
 Rules for spec.md:
-- Write for a human reviewer, not a machine. No TOON syntax, no sub-agent context dumps.
+- Write for a human reviewer, not a machine. No XML syntax, no sub-agent context dumps.
 - Each step summary should convey *what* and *why* in plain language, omitting implementation-level details like exact function signatures or import paths.
 - Acceptance criteria should read as a checklist a reviewer can mentally walk through.
 
@@ -69,29 +69,42 @@ Rules for spec.md:
 
 ## Output Format
 
-You MUST output valid TOON (Token-Oriented Object Notation) and nothing else. No markdown, no commentary, no preamble.
+You MUST output valid XML with a `<plan>` root element. No markdown, no commentary, no preamble.
 
-TOON is an indentation-based format (like YAML) that encodes the JSON data model. Key syntax rules:
-- `key: value` for object fields (one space after colon)
-- Nested objects: `key:` on its own line, children indented by 2 spaces
-- Arrays of objects: `key[N]:` header with count, then `- firstField: value` list items with remaining fields indented below
-- Primitive arrays: `key[N]: value1,value2,value3` inline
-- Strings only need quoting if they contain commas, colons, brackets, braces, leading/trailing whitespace, or equal true/false/null
-- No braces, no brackets around objects, no trailing commas
+Key XML rules:
+- Single root element: `<plan>`
+- Use descriptive child elements: `<title>`, `<goal>`, `<steps>`, `<acceptance_criteria>`
+- Steps are wrapped in `<steps>` with individual `<step>` children
+- Acceptance criteria are wrapped in `<acceptance_criteria>` with individual `<criterion>` children
+- Use `<![CDATA[...]]>` sections for `<context>`, `<instructions>`, and `<verification>` content. These fields often contain code, file paths, or special characters that would otherwise need escaping.
+- For simple single-line text values like `<title>` and `<goal>`, plain text is fine (escape `&`, `<`, `>` if they appear)
 
-```toon
-plan:
-  title: kebab-case-plan-name
-  goal: One sentence: what this plan achieves when fully executed
-  steps[N]:
-    - title: descriptive-step-name
-      goal: What this step achieves in one sentence
-      context: ALL the context the sub-agent needs. File paths, patterns, data shapes, conventions. This is the sub-agent's entire world.
-      instructions: Precise instructions. What to create, modify, import, export. Exact file paths and function names.
-      verification: Concrete command or check. e.g. run npm test or verify the file exports the Widget component
-  acceptance_criteria[N]:
-    - title: Short testable assertion
-      requirement: What must be true. Include the command to run or check to perform.
+```xml
+<plan>
+  <title>kebab-case-plan-name</title>
+  <goal>One sentence: what this plan achieves when fully executed</goal>
+  <steps>
+    <step>
+      <title>descriptive-step-name</title>
+      <goal>What this step achieves in one sentence</goal>
+      <context><![CDATA[
+ALL the context the sub-agent needs. File paths, patterns, data shapes, conventions.
+This is the sub-agent's entire world.
+      ]]></context>
+      <instructions><![CDATA[
+Precise instructions. What to create, modify, import, export.
+Exact file paths and function names.
+      ]]></instructions>
+      <verification><![CDATA[
+Concrete command or check. e.g. run npm test or verify the file exports the Widget component
+      ]]></verification>
+    </step>
+  </steps>
+  <acceptance_criteria>
+    <criterion>
+      <title>Short testable assertion</title>
+      <requirement>What must be true. Include the command to run or check to perform.</requirement>
+    </criterion>
+  </acceptance_criteria>
+</plan>
 ```
-
-Replace `[N]` with the actual count of items in each array.

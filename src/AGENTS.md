@@ -8,14 +8,14 @@ Every task flows through three phases: **Plan -> Implement -> QA**.
 
 A planning agent receives the task description and explores the codebase. It produces two files in `/specs/<issue_number>-<spec_name>/`:
 
-- **`spec.toon`** — The machine-readable execution plan consumed by sub-agents.
+- **`spec.xml`** — The machine-readable execution plan consumed by sub-agents.
 - **`spec.md`** — A human-readable summary of the plan for reviewer approval before implementation begins.
 
 The planning agent makes all architectural decisions upfront. Sub-agents do not make design choices.
 
 ### Phase 2: Implement
 
-For each step in `spec.toon`, a sub-agent is dispatched with ONLY that step's `context` and `instructions`. The sub-agent:
+For each step in `spec.xml`, a sub-agent is dispatched with ONLY that step's `context` and `instructions`. The sub-agent:
 1. Reads the context to understand what exists and what conventions to follow
 2. Executes the instructions precisely
 3. Runs the verification check to confirm success
@@ -25,7 +25,7 @@ Steps are executed sequentially. Each step can depend on the output of previous 
 ### Phase 3: QA
 
 After all steps are complete, a QA agent is dispatched. It:
-1. Reads the `acceptance_criteria` from `spec.toon`
+1. Reads the `acceptance_criteria` from `spec.xml`
 2. Reviews `git log` and `git diff` for all changes made during implementation
 3. Runs each acceptance criterion's verification command
 4. Reports pass/fail for each criterion with evidence
@@ -38,23 +38,30 @@ No task is considered complete until all acceptance criteria pass.
 
 All specs live in `/specs/<issue_number>-<spec_name>/` and contain two files:
 
-- `spec.toon` — The execution plan in TOON (Token-Oriented Object Notation) format, consumed by sub-agents.
+- `spec.xml` — The execution plan in XML format, consumed by sub-agents.
 - `spec.md` — A human-readable markdown summary of the plan for review and approval.
 
-### Plan spec.toon
-```toon
-plan:
-  title: kebab-case-name
-  goal: What this plan achieves
-  steps[N]:
-    - title: step-name
-      goal: What this step achieves
-      context: Everything the sub-agent needs to know
-      instructions: Precise actions to take
-      verification: How to confirm success
-  acceptance_criteria[N]:
-    - title: Testable assertion
-      requirement: What must be true and how to verify it
+### Plan spec.xml
+```xml
+<plan>
+  <title>kebab-case-name</title>
+  <goal>What this plan achieves</goal>
+  <steps>
+    <step>
+      <title>step-name</title>
+      <goal>What this step achieves</goal>
+      <context><![CDATA[Everything the sub-agent needs to know]]></context>
+      <instructions><![CDATA[Precise actions to take]]></instructions>
+      <verification><![CDATA[How to confirm success]]></verification>
+    </step>
+  </steps>
+  <acceptance_criteria>
+    <criterion>
+      <title>Testable assertion</title>
+      <requirement>What must be true and how to verify it</requirement>
+    </criterion>
+  </acceptance_criteria>
+</plan>
 ```
 
 ---

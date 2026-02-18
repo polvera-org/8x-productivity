@@ -7,7 +7,7 @@
     "8x": "./index.js"
   },
   "dependencies": {
-    "@toon-format/toon": "^2.1.0",
+    "fast-xml-parser": "^5.3.6",
     "tsx": "^4.19.2"
   },
   "engines": {
