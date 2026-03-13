@@ -1,101 +1,102 @@
 # 8x Productivity
 
-**A CLI that orchestrates AI agents through a structured Plan -> Implement -> QA workflow.**
+**An enterprise-grade AI agent roster for product engineering teams.**
 
-Four commands turn a task description into working, reviewed code. Each implementation step is executed by a fresh sub-agent with precisely the context it needs — no context rot, no buildup, no 200k-token conversations that forget what they were doing.
+Eight specialized agents — each with distinct expertise, personality, and domain boundaries — that cover the full product development lifecycle: from requirements to architecture to implementation to QA to deployment.
 
-> Dogfooding in production: This is the framework we use to build [Polvera.ai](https://polvera.ai).
+---
+
+## The Team
+
+| Agent | Role | What They Do |
+|-------|------|-------------|
+| **Nova** | CEO & Orchestrator | Researches the codebase, coordinates work, delegates to specialists |
+| **Kepler** | Product Analyst | Translates business needs into testable requirements and acceptance criteria |
+| **Turing** | Solution Architect | Designs technical solutions grounded in existing codebase patterns |
+| **Euclid** | Spec Writer | Decomposes designs into self-contained, executable implementation steps |
+| **Ada** | Full-Stack Engineer | Writes production-quality code — frontend, backend, tests, infrastructure |
+| **Nebula** | QA & Security | Reviews code for correctness, security vulnerabilities, and edge cases |
+| **Rosetta** | Technical Writer | Produces accurate documentation that matches the codebase |
+| **Comet** | SRE & DevOps | Verifies builds, manages deployments, and ships releases |
 
 ---
 
 ## How It Works
 
+The agents follow a **Plan → Implement → QA** workflow:
+
 ```
-8x plan "add rate limiting"  -->  spec.xml  -->  8x implement  -->  8x review
-     (Plan)                                       (Implement)         (QA)
+Plan                              Implement           Verify & Ship
+─────────────────────────────     ───────────         ─────────────────
+Nova researches                   Ada builds           Nebula reviews
+Kepler defines requirements                            Rosetta documents
+Turing designs architecture                            Comet deploys
+Euclid writes the plan
 ```
 
-1. **Plan** — An agent explores the codebase, makes architectural decisions, and produces a `spec.xml` with self-contained steps.
-2. **Implement** — Each step is dispatched to a sub-agent with only that step's context, instructions, and verification criteria. Fresh context window per step.
-3. **QA** — A review agent verifies every acceptance criterion against the actual changes.
+Each agent has hard boundaries — they do their job and nothing else. The architect does not write code. The engineer does not make product decisions. QA does not fix bugs. This separation prevents the role confusion that degrades output quality in single-agent workflows.
 
 ---
 
 ## Installation
 
-Requires Node.js >= 18 and [opencode](https://opencode.ai).
+### For OpenCode
+
+Copy the agents into your project's `.opencode/agents/` directory:
 
 ```bash
+# Clone this repo
 git clone git@github.com:polvera-org/8x-productivity.git
-cd 8x-productivity
-npm install && npx 8x install
+
+# Copy agents to your project
+cp 8x-productivity/src/agents/*.md your-project/.opencode/agents/
 ```
 
----
+OpenCode will automatically detect them and make them available as sub-agents.
 
-## Commands
+### For Other Platforms
 
-| Command | Description |
-|---------|-------------|
-| `8x plan <task>` | Produce a flat plan for implementation steps and acceptance criteria |
-| `8x implement` | Execute each step from a spec sequentially. Stops on failure. |
-| `8x review` | Verify acceptance criteria against actual changes. |
+Each agent is a self-contained markdown file with a system prompt. The YAML frontmatter is OpenCode-specific metadata; the prompt content works with any LLM platform that supports system prompts or agent definitions.
 
 ---
 
-## Why Sub-Agents Per Step
+## Agent Design
 
-Long-running agent sessions accumulate context that degrades output quality. 8x solves this by:
+Each agent prompt is built on these principles:
 
-- **Isolating each step** in its own agent session with a clean context window
-- **Front-loading decisions** in the planning phase so sub-agents don't need to reason about architecture
-- **Providing exactly the context needed** — file paths, patterns, conventions, constraints — nothing more
+- **Single responsibility** — One agent, one domain. No crossing boundaries.
+- **Distinct personality** — Behavioral traits that make the agent effective in its role. Kepler's analytical rigor. Ada's craftsmanship. Nebula's adversarial mindset.
+- **Explicit contracts** — Clear input/output formats so agents can hand off work cleanly.
+- **Hard boundaries** — Every agent has a "What You Do NOT Do" section preventing scope creep.
+- **Tech-stack agnostic** — Domain expertise without framework lock-in. They adapt to your codebase.
 
-The planner sees the full picture. Each implementer sees only its step. The reviewer sees only the acceptance criteria and the diff.
+See [src/AGENTS.md](src/AGENTS.md) for the full roster documentation.
 
 ---
 
-## Configuration
+## Project Structure
 
-All commands default to `opencode run`. Override per-command via config files:
-
-- `~/.8x/config.json` — Global
-- `<project>/.8x/config.json` — Project (takes precedence)
-
-```json
-{
-  "plan_command": "claude -p",
-  "implement_command": "opencode run",
-  "review_command": "opencode run",
-  "commit_prefix": "feat:"
-}
 ```
-
-All keys are optional. Commands support full shell syntax via `sh -c`.
-
-After each implementation step completes successfully, 8x automatically commits the changes. The commit message is the step title with dashes replaced by spaces (e.g., step `add-rate-limiting` becomes commit message `add rate limiting`). Set `commit_prefix` to prepend a string to all auto-commit messages — useful for ticket numbers or conventional commit prefixes. Defaults to empty string (no prefix).
-
----
-
-## Spec Files
-
-Plans live in `specs/<name>/spec.xml` using XML format. XML is well-understood by LLMs, requires minimal escaping with CDATA sections, and parses reliably. Each step includes:
-
-- **context** — Everything the sub-agent needs to know
-- **instructions** — Precise actions to take
-- **verification** — How to confirm success
-
-See [src/AGENTS.md](src/AGENTS.md) for the full schema.
+src/
+├── agents/          # The 8 agent prompts
+│   ├── nova.md      # CEO & Orchestrator
+│   ├── kepler.md    # Product Analyst
+│   ├── turing.md    # Solution Architect
+│   ├── euclid.md    # Spec Writer
+│   ├── ada.md       # Full-Stack Engineer
+│   ├── nebula.md    # QA & Security Specialist
+│   ├── rosetta.md   # Technical Writer
+│   └── comet.md     # SRE & DevOps
+├── prompts/         # Workflow prompts (plan, implement, review)
+└── references/      # Reference documentation for agents
+```
 
 ---
 
 ## Philosophy
 
-- **Structured over ad-hoc** — Plan -> Implement -> QA. No skipping phases.
-- **Fresh context per step** — Sub-agents start clean. No context rot.
-- **Concrete over abstract** — Exact file paths, not vague descriptions.
-- **Scope control** — Steps state what to touch and what NOT to touch.
-
----
-
-**Built for developers who want to ship faster without burning out.**
+- **Structured over ad-hoc** — Plan → Implement → QA. No skipping phases.
+- **Separation of concerns** — Each agent owns one domain. Role confusion degrades quality.
+- **Concrete over abstract** — Exact file paths and function names, not vague descriptions.
+- **Scope control** — Agents state what to touch and what NOT to touch.
+- **Fresh context per step** — Sub-agents start clean. No context rot from long conversations.
