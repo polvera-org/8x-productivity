@@ -23,6 +23,8 @@ Eight specialized agents — each with distinct expertise, personality, and doma
 
 ## How It Works
 
+Nova orchestrates work using a **HEARTBEAT** loop — a continuous cycle of research, delegation, and verification. She reads the codebase, delegates tasks to the right specialist, and verifies their output before moving on.
+
 The agents follow a **Plan → Implement → QA** workflow:
 
 ```
@@ -35,6 +37,8 @@ Euclid writes the plan
 ```
 
 Each agent has hard boundaries — they do their job and nothing else. The architect does not write code. The engineer does not make product decisions. QA does not fix bugs. This separation prevents the role confusion that degrades output quality in single-agent workflows.
+
+See [src/HEARTBEAT.md](src/HEARTBEAT.md) for Nova's orchestration loop.
 
 ---
 
@@ -87,7 +91,8 @@ src/
 │   ├── nebula.md    # QA & Security Specialist
 │   ├── rosetta.md   # Technical Writer
 │   └── comet.md     # SRE & DevOps
-├── prompts/         # Workflow prompts (plan, implement, review)
+├── AGENTS.md        # Agent roster documentation
+├── HEARTBEAT.md     # Nova's orchestration loop
 └── references/      # Reference documentation for agents
 ```
 
