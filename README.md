@@ -44,23 +44,41 @@ See [src/HEARTBEAT.md](src/HEARTBEAT.md) for Nova's orchestration loop.
 
 ## Installation
 
-### For OpenCode
-
-Copy the agents into your project's `.opencode/agents/` directory:
+### With Claude Code
 
 ```bash
-# Clone this repo
 git clone git@github.com:polvera-org/8x-productivity.git
-
-# Copy agents to your project
-cp 8x-productivity/src/agents/*.md your-project/.opencode/agents/
+cp -r 8x-productivity/.claude/agents/ your-project/.claude/agents/
 ```
 
-OpenCode will automatically detect them and make them available as sub-agents.
+### With OpenCode
 
-### For Other Platforms
+```bash
+git clone git@github.com:polvera-org/8x-productivity.git
+cp -r 8x-productivity/.opencode/agents/ your-project/.opencode/agents/
+```
 
-Each agent is a self-contained markdown file with a system prompt. The YAML frontmatter is OpenCode-specific metadata; the prompt content works with any LLM platform that supports system prompts or agent definitions.
+### With Codex CLI
+
+```bash
+git clone git@github.com:polvera-org/8x-productivity.git
+cp 8x-productivity/AGENTS.md your-project/AGENTS.md
+```
+
+### With Docker
+
+```bash
+git clone git@github.com:polvera-org/8x-productivity.git
+cd 8x-productivity
+make docker-build
+make docker-run
+```
+
+See [DOCKER.md](DOCKER.md) for full Docker usage.
+
+### Standalone
+
+Each agent is a self-contained markdown file with a system prompt. The source files in `src/agents/` use CLI-agnostic YAML frontmatter; the prompt content works with any LLM platform that supports system prompts or agent definitions.
 
 ---
 
@@ -74,7 +92,7 @@ Each agent prompt is built on these principles:
 - **Hard boundaries** — Every agent has a "What You Do NOT Do" section preventing scope creep.
 - **Tech-stack agnostic** — Domain expertise without framework lock-in. They adapt to your codebase.
 
-See [src/AGENTS.md](src/AGENTS.md) for the full roster documentation.
+See [AGENTS.md](AGENTS.md) for the full roster documentation.
 
 ---
 
@@ -82,18 +100,27 @@ See [src/AGENTS.md](src/AGENTS.md) for the full roster documentation.
 
 ```
 src/
-├── agents/          # The 8 agent prompts
-│   ├── nova.md      # CEO & Orchestrator
-│   ├── kepler.md    # Product Analyst
-│   ├── turing.md    # Solution Architect
-│   ├── euclid.md    # Spec Writer
-│   ├── ada.md       # Full-Stack Engineer
-│   ├── nebula.md    # QA & Security Specialist
-│   ├── rosetta.md   # Technical Writer
-│   └── comet.md     # SRE & DevOps
-├── AGENTS.md        # Agent roster documentation
-├── HEARTBEAT.md     # Nova's orchestration loop
-└── references/      # Reference documentation for agents
+├── agents/              # CLI-agnostic source prompts (source of truth)
+│   ├── nova.md          # CEO & Orchestrator
+│   ├── kepler.md        # Product Analyst
+│   ├── turing.md        # Solution Architect
+│   ├── euclid.md        # Spec Writer
+│   ├── ada.md           # Full-Stack Engineer
+│   ├── nebula.md        # QA & Security Specialist
+│   ├── rosetta.md       # Technical Writer
+│   └── comet.md         # SRE & DevOps
+├── HEARTBEAT.md         # Nova's orchestration loop
+└── references/          # Reference documentation for agents
+
+scripts/
+└── build-cli-configs.sh # Generates CLI-specific configs from src/agents/
+
+.claude/agents/          # Generated — Claude Code format
+.opencode/agents/        # Generated — OpenCode format
+AGENTS.md                # Agent roster docs + Codex CLI config
+DOCKER.md                # Docker setup documentation
+Dockerfile               # Portable dev environment
+Makefile                 # Build targets
 ```
 
 ---

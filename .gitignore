@@ -1,5 +1,14 @@
+# Secrets
 .env
-.opencode/
-.claude/
+
+# OpenCode - track agents only
+.opencode/*
+!.opencode/agents/
+
+# Claude Code - track agents only
+.claude/*
+!.claude/agents/
+
+# Reference materials
 ref/
 references/

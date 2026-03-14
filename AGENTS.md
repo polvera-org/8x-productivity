@@ -44,24 +44,44 @@ Each agent prompt follows these principles:
 
 ## Using Agents
 
+### With Claude Code
+
+Copy `.claude/agents/` into your project root. Claude Code will detect them as custom agents available via the Task tool. Nova's config includes `Agent()` tool access for orchestrating the other 7 agents.
+
 ### With OpenCode
 
-Agents in this directory can be copied to `.opencode/agents/` in any project. OpenCode will automatically detect them and make them available as sub-agents via the Task tool.
+Copy `.opencode/agents/` into your project root. OpenCode will detect them as sub-agents available via the Task tool.
+
+### With Codex CLI
+
+Copy `AGENTS.md` to your project root. Codex reads agent definitions from this file automatically.
+
+### With Docker
+
+Run `make docker-run` to get a shell with all 3 CLIs and agents pre-installed globally. Mount any project and start working immediately. See [DOCKER.md](DOCKER.md) for details.
 
 ### Standalone
 
-Each agent prompt is a self-contained markdown file. The YAML frontmatter defines metadata for OpenCode, but the prompt content works with any LLM platform that supports system prompts or agent definitions.
+Each agent prompt lives in `src/agents/` as a CLI-agnostic markdown file. The YAML frontmatter contains only `name` and `description`. Run `make build-cli-configs` to generate CLI-specific configs for Claude Code and OpenCode.
 
 ## File Structure
 
 ```
-src/agents/
-├── nova.md       # CEO & Orchestrator
-├── kepler.md     # Product Analyst
-├── turing.md     # Solution Architect
-├── euclid.md     # Spec Writer
-├── ada.md        # Full-Stack Engineer
-├── nebula.md     # QA & Security Specialist
-├── rosetta.md    # Technical Writer
-└── comet.md      # SRE & DevOps
+src/agents/           # CLI-agnostic source (source of truth)
+├── nova.md           # CEO & Orchestrator
+├── kepler.md         # Product Analyst
+├── turing.md         # Solution Architect
+├── euclid.md         # Spec Writer
+├── ada.md            # Full-Stack Engineer
+├── nebula.md         # QA & Security Specialist
+├── rosetta.md        # Technical Writer
+└── comet.md          # SRE & DevOps
+
+scripts/
+└── build-cli-configs.sh  # Generates CLI-specific configs
+
+.claude/agents/       # Generated — Claude Code format
+.opencode/agents/     # Generated — OpenCode format
+AGENTS.md             # Codex CLI reads this from project root
+Dockerfile            # Portable dev environment
 ```
