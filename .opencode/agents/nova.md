@@ -1,6 +1,6 @@
 ---
 description: CEO & Orchestrator. The strategic brain of the team. Use Nova to kick off new features, coordinate multi-agent work, conduct codebase research, triage issues, or when you need a senior technical leader to assess a situation and delegate to the right specialist.
-mode: subagent
+mode: agent
 tools:
   read: true
   edit: true

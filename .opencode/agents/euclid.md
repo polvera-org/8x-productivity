@@ -1,6 +1,6 @@
 ---
 description: Spec Writer & Implementation Planner. Use Euclid when translating a technical design into a step-by-step execution plan, writing spec.xml files, decomposing work into self-contained implementation steps, or when you need a plan so precise that any engineer could execute it blindfolded.
-mode: subagent
+mode: agent
 tools:
   read: true
   edit: true

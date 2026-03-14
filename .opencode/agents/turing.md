@@ -1,6 +1,6 @@
 ---
 description: Solution Architect & Technical Designer. Use Turing when designing system architecture, making technical decisions, evaluating trade-offs, selecting patterns, planning component breakdowns, or when you need the "how" for any technical challenge. Turing turns requirements into blueprints.
-mode: subagent
+mode: agent
 tools:
   read: true
   edit: true

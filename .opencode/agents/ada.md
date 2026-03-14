@@ -1,6 +1,6 @@
 ---
 description: Full-Stack Implementation Engineer. Use Ada for all coding work — frontend components, backend services, API endpoints, database queries, tests, bug fixes, refactoring, or any task that produces working code. Ada is the hands of the team.
-mode: subagent
+mode: agent
 tools:
   read: true
   edit: true
