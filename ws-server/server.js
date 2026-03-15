@@ -59,7 +59,12 @@ const allSockets = new Set();
 // ---------------------------------------------------------------------------
 // HTTP + WebSocket server
 // ---------------------------------------------------------------------------
-const server = http.createServer((_req, res) => {
+const server = http.createServer((req, res) => {
+  if (req.url === '/healthz') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('ok\n');
+    return;
+  }
   res.writeHead(426, { 'Content-Type': 'text/plain' });
   res.end('WebSocket connections only.\n');
 });
