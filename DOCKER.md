@@ -10,6 +10,7 @@ A portable dev environment with all 3 AI CLI tools and the full 8-agent roster p
 - **Codex CLI** (`@openai/codex`)
 - **OpenCode** (`opencode-ai`)
 - **8 agents** installed globally for each CLI
+- **WebSocket shell server** for remote terminal access
 
 ## Prerequisites
 
@@ -26,14 +27,43 @@ docker build -t 8x-productivity .
 
 ## Run
 
+### WebSocket Server Mode (default)
+
+The container starts a WebSocket server on port 8080 that provides authenticated shell access. This is the default mode, designed for integration with web-based terminal UIs.
+
 ```bash
+# Generate a secure API key
+export WS_API_KEY=$(openssl rand -hex 32)
+
+# Start the container (detached)
 make docker-run
+
+# Test with wscat
+wscat -c ws://localhost:8080
+> {"type":"auth","token":"<your WS_API_KEY>"}
+```
+
+Required: `WS_API_KEY` environment variable (at least 32 characters).
+
+See [docs/websocket-server.md](docs/websocket-server.md) for full protocol documentation and [docs/xterm-integration.md](docs/xterm-integration.md) for client-side integration.
+
+```bash
+# Stop the container
+make docker-stop
+```
+
+### Interactive Mode
+
+For direct shell access without the WebSocket server:
+
+```bash
+make docker-run-interactive
 # or
 docker run -it --rm \
   -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
   -e OPENAI_API_KEY=$OPENAI_API_KEY \
   -v $(pwd):/root/workspace \
-  8x-productivity
+  8x-productivity bash
 ```
 
 Your project is mounted at `/root/workspace`. Any project-level agent configs (`.claude/agents/`, `.opencode/agents/`, `AGENTS.md`) take precedence over the global ones baked into the image.
@@ -52,4 +82,16 @@ Your project is mounted at `/root/workspace`. Any project-level agent configs (`
 |--------|-------------|
 | `make build-cli-configs` | Regenerate `.claude/agents/` and `.opencode/agents/` from `src/agents/` |
 | `make docker-build` | Build the Docker image |
-| `make docker-run` | Run the container interactively with API keys and project mount |
+| `make docker-run` | Run the container with WebSocket server (detached, port 8080) |
+| `make docker-run-interactive` | Run the container interactively with bash |
+| `make docker-stop` | Stop the running container |
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `ANTHROPIC_API_KEY` | No | — | API key for Claude Code |
+| `OPENAI_API_KEY` | No | — | API key for Codex/OpenCode |
+| `WS_API_KEY` | WebSocket mode | — | API key for WebSocket auth (min 32 chars) |
+| `WS_PORT` | No | `8080` | Host port mapping for WebSocket server |
+| `WS_MAX_CONNECTIONS` | No | `5` | Max concurrent WebSocket connections |

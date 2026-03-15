@@ -9,6 +9,9 @@
 .claude/*
 !.claude/agents/
 
+# WebSocket server
+ws-server/node_modules/
+
 # Reference materials
 ref/
 references/
