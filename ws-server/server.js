@@ -124,6 +124,7 @@ wss.on('connection', (ws, req) => {
 
         // Spawn PTY
         const env = { ...process.env };
+        env.SOLOHACKER_TOKEN = env.WS_API_KEY;
         delete env.WS_API_KEY;
 
         shell = pty.spawn('bash', [], {

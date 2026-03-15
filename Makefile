@@ -14,6 +14,7 @@ docker-run:
 		-e ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) \
 		-e OPENAI_API_KEY=$(OPENAI_API_KEY) \
 		-e WS_API_KEY=$(WS_API_KEY) \
+		-e SOLOHACKER_API_URL=$(SOLOHACKER_API_URL) \
 		-p $(WS_PORT):8080 \
 		-v $$(pwd):/root/workspace \
 		8x-productivity

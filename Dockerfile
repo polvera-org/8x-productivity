@@ -18,6 +18,10 @@ COPY .opencode/agents/ /root/.opencode/agents/
 RUN mkdir -p /root/.codex
 COPY AGENTS.md /root/.codex/AGENTS.md
 
+# Solo Hacker CLI
+COPY solohacker/cli.js /usr/local/bin/solohacker
+RUN chmod +x /usr/local/bin/solohacker
+
 # WebSocket shell server
 COPY ws-server/ /opt/ws-server/
 RUN cd /opt/ws-server && npm install --production

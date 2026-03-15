@@ -76,6 +76,19 @@ Your project is mounted at `/root/workspace`. Any project-level agent configs (`
 | **OpenCode** | `/root/.opencode/agents/` | `.opencode/agents/` in project root |
 | **Codex CLI** | `/root/.codex/AGENTS.md` | `AGENTS.md` in project root |
 
+## Solo Hacker CLI
+
+The container includes the `solohacker` CLI at `/usr/local/bin/solohacker` for managing issues, syncing agent configs, and tracking goals through the Solo Hacker platform API.
+
+```bash
+# Inside the container PTY
+solohacker list-issues
+solohacker read-issue SH-12
+solohacker assign-issue SH-12 ada
+```
+
+The CLI auth token (`SOLOHACKER_TOKEN`) is automatically injected when a PTY shell is spawned. See [docs/solohacker-cli.md](docs/solohacker-cli.md) for full usage.
+
 ## Make Targets
 
 | Target | Description |
@@ -95,3 +108,6 @@ Your project is mounted at `/root/workspace`. Any project-level agent configs (`
 | `WS_API_KEY` | WebSocket mode | — | API key for WebSocket auth (min 32 chars) |
 | `WS_PORT` | No | `8080` | Host port mapping for WebSocket server |
 | `WS_MAX_CONNECTIONS` | No | `5` | Max concurrent WebSocket connections |
+| `SOLOHACKER_API_URL` | WebSocket mode | — | Solo Hacker platform API base URL |
+| `SOLOHACKER_AGENT` | No | — | Agent name for API attribution (set by platform) |
+| `SOLOHACKER_TOKEN` | Auto | — | API auth token (auto-derived from WS_API_KEY in PTY) |
