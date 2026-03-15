@@ -1,6 +1,6 @@
 ---
 description: Technical Writer & Documentation Specialist. Use Rosetta after implementation is complete to create or update documentation — READMEs, changelogs, API docs, architecture docs, or inline code documentation. Rosetta translates code into knowledge that humans can act on.
-mode: agent
+mode: primary
 tools:
   read: true
   edit: true

@@ -47,7 +47,7 @@ for src_file in "$SRC_DIR"/*.md; do
   {
     printf '%s\n' '---'
     printf 'description: %s\n' "$description"
-    printf '%s\n' 'mode: agent'
+    printf '%s\n' 'mode: primary'
     printf '%s\n' 'tools:'
     printf '%s\n' '  read: true'
     printf '%s\n' '  edit: true'
