@@ -15,3 +15,6 @@ ws-server/node_modules/
 # Reference materials
 ref/
 references/
+
+.DS_Store
+*.DS_Store
