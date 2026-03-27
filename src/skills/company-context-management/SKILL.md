@@ -197,9 +197,17 @@ Common tag prefixes:
 | `status/*`  | Lifecycle: `#status/active`              |
 | `agent/*`   | Author agent: `#agent/nova`              |
 
-### Backlinks
+### Linking policy
 
-When creating a note that relates to existing notes, add a link in the new note AND update the related note with a backlink. This keeps the knowledge graph navigable in both directions.
+Prefer hub-and-spoke over mesh. Use `domains/` notes as the main hubs, and add manual links when they improve navigation - not just for completeness.
+
+- `domains/`: canonical hubs that can link down more freely
+- `entities/`: link primarily upward to the owning domain hub; add sideways links only for direct ownership, creator, dependency, or central comparisons
+- `research/`: link mainly to the subject note, the source/reference note, and at most one downstream architecture or decision note that consumed the research
+- `architecture/`: link mainly to the owning project and only a few key upstream research/reference notes
+- `daily/`: link only to artifacts created, updated, or decided that day
+
+Do not force reciprocal links by default. Obsidian backlinks already provide reverse discovery.
 
 ## Searching with qmd
 
@@ -276,7 +284,7 @@ Use `/brain-load` as the standard preflight step for planning, implementation, a
 
 Do not treat notes as isolated files. Expand retrieval through:
 
-- wiki-links and backlinks
+- wiki-links and Obsidian backlinks
 - related project notes
 - relevant decision records
 - workflows that constrain execution
@@ -302,7 +310,7 @@ Before promoting generated content into durable context:
 1. verify it is worth preserving
 2. link it to its source material
 3. mark provenance clearly in frontmatter/body
-4. update related notes with backlinks when appropriate
+4. add only the manual links needed for clear navigation
 
 ### Provenance
 
@@ -343,8 +351,8 @@ Write back knowledge worth preserving. Ask: "Would a future agent benefit from k
 2. Use the appropriate template — domain hub, entity factsheet, decision record, workflow/SOP, or technical document
 3. Use a descriptive kebab-case filename: `jwt-vs-session-auth.md`
 4. Add complete frontmatter with tags
-5. Link to related existing notes with `[[wiki-links]]`
-6. Update related notes with backlinks to the new note
+5. Link to the smallest useful set of related notes with `[[wiki-links]]`, following the hub-and-spoke model
+6. Keep `## Related` short by note type: domain 4-6, entity 3-4, research 2-4, people 2-3, daily 2-4
 7. Run `qmd update` after writing
 
 ### Updating Notes
@@ -644,7 +652,7 @@ aliases:
 
 - **Filenames**: kebab-case, descriptive, no dates in name (dates go in frontmatter). Exceptions: daily notes use `YYYY-MM-DD.md`, and meeting notes use `YYYY-MM-DD-topic.md`.
 - **One idea per note**: Prefer atomic notes that can be linked over monolithic documents. Split when a note covers multiple independent topics.
-- **Link generously**: The value of the vault compounds with connections. Always ask "what existing notes relate to this?"
+- **Link intentionally**: Prefer hub-and-spoke navigation over dense mesh linking. Add a manual link only when navigation would be meaningfully worse without it.
 - **Folders are the primary axis**: The semantic folder structure (`domains/`, `entities/`, `nicolas/`, `architecture/`, `research/`, `references/`, `workflows/`, `daily/`) is the primary organizational axis. Tags provide cross-cutting categorization (`type/*`, `domain/*`, `status/*`) that lets notes be discovered across folder boundaries.
 - **Update, don't duplicate**: If a note exists on a topic, update it rather than creating a new one. Create a new note only when the scope is genuinely different.
 - **Status lifecycle**: `draft` → `active` → `archived` or `superseded`. Mark superseded notes with a link to their replacement.
