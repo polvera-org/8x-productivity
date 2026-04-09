@@ -6,8 +6,7 @@
     "build": "tsx scripts/build.ts"
   },
   "devDependencies": {
-    "@open-gitagent/gitagent": "latest",
-    "js-yaml": "^4.1.0",
+"js-yaml": "^4.1.0",
     "tsx": "latest",
     "typescript": "latest"
   }

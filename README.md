@@ -1,6 +1,6 @@
 # 8x Productivity
 
-**An enterprise-grade AI agent roster for product engineering teams.**
+**An AI agent roster for product engineering teams.**
 
 Eight specialized agents — each with distinct expertise, personality, and domain boundaries — that cover the full product development lifecycle: from requirements to architecture to implementation to QA to deployment.
 
@@ -23,8 +23,6 @@ Eight specialized agents — each with distinct expertise, personality, and doma
 
 ## How It Works
 
-Nova orchestrates work using a **HEARTBEAT** loop — a continuous cycle of research, delegation, and verification. She reads the codebase, delegates tasks to the right specialist, and verifies their output before moving on.
-
 The agents follow a **Plan → Implement → QA** workflow:
 
 ```
@@ -38,47 +36,63 @@ Euclid writes the plan
 
 Each agent has hard boundaries — they do their job and nothing else. The architect does not write code. The engineer does not make product decisions. QA does not fix bugs. This separation prevents the role confusion that degrades output quality in single-agent workflows.
 
-See [src/HEARTBEAT.md](src/HEARTBEAT.md) for Nova's orchestration loop.
-
 ---
 
 ## Installation
 
-### With Claude Code
-
-```bash
-git clone git@github.com:polvera-org/8x-productivity.git
-cp -r 8x-productivity/.claude/agents/ your-project/.claude/agents/
-```
-
-### With OpenCode
-
-```bash
-git clone git@github.com:polvera-org/8x-productivity.git
-cp -r 8x-productivity/.opencode/agents/ your-project/.opencode/agents/
-```
-
-### With Codex CLI
-
-```bash
-git clone git@github.com:polvera-org/8x-productivity.git
-cp 8x-productivity/AGENTS.md your-project/AGENTS.md
-```
-
-### With Docker
+Clone the repo and run the build to generate CLI-specific configs:
 
 ```bash
 git clone git@github.com:polvera-org/8x-productivity.git
 cd 8x-productivity
-make docker-build
-make docker-run
+npm install
+npm run build
 ```
 
-See [DOCKER.md](DOCKER.md) for full Docker usage.
+`npm run build` renders all agent definitions into `.claude/`, `.opencode/`, `.openclaw/`, and `.a0proj/`, and installs them globally into `~/.claude/` and `~/.opencode/` so agents are available in any project.
 
-### Standalone
+### Manual copy (no build step)
 
-Each agent is a self-contained markdown file with a system prompt. The source files in `src/agents/` use CLI-agnostic YAML frontmatter; the prompt content works with any LLM platform that supports system prompts or agent definitions.
+The generated configs are checked in, so you can copy them directly:
+
+```bash
+# Claude Code
+cp -r .claude/agents/ your-project/.claude/agents/
+
+# OpenCode
+cp -r .opencode/agents/ your-project/.opencode/agents/
+
+# Codex CLI
+cp AGENTS.md your-project/AGENTS.md
+
+# OpenClaw
+cp -r .openclaw/ your-project/.openclaw/
+```
+
+---
+
+## Project Structure
+
+```
+src/
+└── agents/              # Source of truth — gitagent-compatible format
+    ├── ada/
+    │   ├── agent.yaml   # Manifest: name, description, model, tools
+    │   └── SOUL.md      # Agent prompt body
+    ├── nova/            # (same structure for all 8 agents)
+    └── ...
+
+scripts/
+└── build.ts             # Renders src/agents/ into CLI-specific output formats
+
+.claude/agents/          # Generated — Claude Code format
+.opencode/agents/        # Generated — OpenCode format
+.openclaw/               # Generated — OpenClaw format
+.a0proj/agents/          # Generated — Agent Zero format
+AGENTS.md                # Codex CLI manifest
+```
+
+Agents are defined in the [gitagent](https://github.com/open-gitagent/gitagent) format: each agent lives in its own directory with an `agent.yaml` manifest and a `SOUL.md` prompt. The build script reads these and renders CLI-specific output for Claude Code, OpenCode, OpenClaw, Agent Zero, and Codex.
 
 ---
 
@@ -92,43 +106,9 @@ Each agent prompt is built on these principles:
 - **Hard boundaries** — Every agent has a "What You Do NOT Do" section preventing scope creep.
 - **Tech-stack agnostic** — Domain expertise without framework lock-in. They adapt to your codebase.
 
-See [AGENTS.md](AGENTS.md) for the full roster documentation.
-
 ---
 
-## Project Structure
+## Adding or Editing Agents
 
-```
-src/
-├── agents/              # CLI-agnostic source prompts (source of truth)
-│   ├── nova.md          # CEO & Orchestrator
-│   ├── kepler.md        # Product Analyst
-│   ├── turing.md        # Solution Architect
-│   ├── euclid.md        # Spec Writer
-│   ├── ada.md           # Full-Stack Engineer
-│   ├── nebula.md        # QA & Security Specialist
-│   ├── rosetta.md       # Technical Writer
-│   └── comet.md         # SRE & DevOps
-├── HEARTBEAT.md         # Nova's orchestration loop
-└── references/          # Reference documentation for agents
-
-scripts/
-└── build-cli-configs.sh # Generates CLI-specific configs from src/agents/
-
-.claude/agents/          # Generated — Claude Code format
-.opencode/agents/        # Generated — OpenCode format
-AGENTS.md                # Agent roster docs + Codex CLI config
-DOCKER.md                # Docker setup documentation
-Dockerfile               # Portable dev environment
-Makefile                 # Build targets
-```
-
----
-
-## Philosophy
-
-- **Structured over ad-hoc** — Plan → Implement → QA. No skipping phases.
-- **Separation of concerns** — Each agent owns one domain. Role confusion degrades quality.
-- **Concrete over abstract** — Exact file paths and function names, not vague descriptions.
-- **Scope control** — Agents state what to touch and what NOT to touch.
-- **Fresh context per step** — Sub-agents start clean. No context rot from long conversations.
+1. Edit `src/agents/<name>/SOUL.md` for prompt changes, or `src/agents/<name>/agent.yaml` for metadata.
+2. Run `npm run build` to regenerate all CLI outputs.
