@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: kepler
+version: "1.0.0"
+description: "Product Analyst & Requirements Specialist. Use Kepler when starting a new feature, defining requirements, writing acceptance criteria, scoping work, or translating business needs into testable specifications. Kepler turns ambiguity into clarity."
+model:
+  primary: claude-sonnet-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep

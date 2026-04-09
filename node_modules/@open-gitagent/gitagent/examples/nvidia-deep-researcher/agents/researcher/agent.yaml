@@ -1,0 +1,23 @@
+spec_version: "0.1.0"
+name: researcher
+version: 1.0.0
+description: >
+  Executes searches and synthesizes findings with inline citations. Uses web search,
+  paper search, and knowledge retrieval tools. Limited to 8 search calls per task.
+
+model:
+  preferred: nvidia/nemotron-3-super-120b-a12b
+  fallback:
+    - openai/gpt-oss-120b
+  constraints:
+    temperature: 0.1
+    max_tokens: 8192
+
+runtime:
+  max_turns: 15
+  timeout: 180
+
+tags:
+  - research
+  - search
+  - nvidia

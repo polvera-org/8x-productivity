@@ -1,0 +1,34 @@
+name: paper-search
+description: Academic paper search via Google Scholar using Serper API
+input_schema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: Academic search query
+    year_from:
+      type: integer
+      description: Filter papers published on or after this year
+    year_to:
+      type: integer
+      description: Filter papers published on or before this year
+    max_results:
+      type: integer
+      description: Maximum number of results to return
+  required: [query]
+output_schema:
+  type: object
+  properties:
+    results:
+      type: array
+    total_results:
+      type: integer
+implementation:
+  type: http
+  url: https://google.serper.dev/scholar
+  method: POST
+  timeout: 30
+annotations:
+  read_only: true
+  cost: low
+  requires_confirmation: false

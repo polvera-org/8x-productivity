@@ -1,0 +1,32 @@
+layers:
+  - name: index
+    path: MEMORY.md
+    max_lines: 20
+    format: markdown
+
+  - name: context
+    path: context.md
+    max_lines: 100
+    format: markdown
+    load: always
+
+  - name: key-decisions
+    path: key-decisions.md
+    max_lines: 200
+    format: markdown
+    load: always
+
+  - name: daily-log
+    path: daily-log/
+    format: markdown
+    load: latest
+    retention: 30d
+    rotation: daily
+
+update_triggers:
+  - on_session_end
+  - on_explicit_save
+
+archive_policy:
+  daily_log_retention: 90d
+  compress_after: 30d

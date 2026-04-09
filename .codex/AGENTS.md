@@ -4,16 +4,16 @@ Eight specialized agents that form a complete product engineering team. Each age
 
 ## The Team
 
-| Agent       | Role                     | Domain                                                       |
-| ----------- | ------------------------ | ------------------------------------------------------------ |
-| **Nova**    | CEO & Orchestrator       | Research, delegation, strategic coordination                 |
-| **Kepler**  | Product Analyst          | Requirements, acceptance criteria, scope definition          |
-| **Turing**  | Solution Architect       | Technical design, architecture, pattern selection            |
-| **Euclid**  | Spec Writer              | Implementation plans, step decomposition, verification gates |
-| **Ada**     | Full-Stack Engineer      | All coding — frontend, backend, tests, infrastructure        |
-| **Nebula**  | QA & Security Specialist | Code review, security audit, acceptance testing              |
-| **Rosetta** | Technical Writer         | Documentation, changelogs, API docs                          |
-| **Comet**   | SRE & DevOps             | Build verification, deployment, release management           |
+| Agent | Role | Domain |
+|-------|------|--------|
+| **Nova** | CEO & Orchestrator | Research, delegation, strategic coordination |
+| **Kepler** | Product Analyst | Requirements, acceptance criteria, scope definition |
+| **Turing** | Solution Architect | Technical design, architecture, pattern selection |
+| **Euclid** | Spec Writer | Implementation plans, step decomposition, verification gates |
+| **Ada** | Full-Stack Engineer | All coding — frontend, backend, tests, infrastructure |
+| **Nebula** | QA & Security Specialist | Code review, security audit, acceptance testing |
+| **Rosetta** | Technical Writer | Documentation, changelogs, API docs |
+| **Comet** | SRE & DevOps | Build verification, deployment, release management |
 
 ## How They Work Together
 
@@ -42,64 +42,46 @@ Each agent prompt follows these principles:
 4. **Hard boundaries.** Every agent has an explicit "What You Do NOT Do" section that prevents scope creep between roles.
 5. **Tech-stack agnostic.** Agents carry domain expertise without being locked to a specific framework or language. They adapt to whatever codebase they are working in.
 
-## Context Management
+## Using Agents
 
-All agents share a persistent knowledge vault at `/root/workspace/context/` — an Obsidian-compatible markdown vault searchable via `qmd`.
+### With Claude Code
 
-Skills are a first-class capability abstraction in this workspace. They let agents load targeted instructions, assets, and workflows only when needed, which keeps baseline context clean while still making advanced capabilities available on demand.
+Copy `.claude/agents/` into your project root. Claude Code will detect them as custom agents available via the Task tool. Nova's config includes `Agent()` tool access for orchestrating the other 7 agents.
 
-### Vault Structure
+### With OpenCode
 
-```
-context/
-├── domains/       # Semantic concept hubs — category-level knowledge
-├── entities/      # Lean factsheets (projects/, companies/, people/)
-├── nicolas/       # Nicolas's career context — roles, career map
-├── architecture/  # System designs, component docs
-├── research/      # Time-stamped analytical syntheses
-├── references/    # Raw source material for citation
-├── workflows/     # SOPs, deployment procedures, dev processes
-└── daily/         # Episodic daily logs
-```
+Copy `.opencode/agents/` into your project root. OpenCode will detect them as sub-agents available via the Task tool.
 
-### Core Rules
+### With Codex CLI
 
-1. **Read before you work.** Search the vault (`qmd search "<topic>" -c context`) for relevant prior context before starting any task.
-   - Default to `/brain-load <topic>` when the task depends on existing company memory, decisions, workflows, meeting notes, or research context.
-2. **Query the domains before execution.** Check `context/domains/` for relevant domain context that should inform the task at hand before proceeding.
-3. **Document new capabilities as skills.** When a reusable capability is added or materially changed as a skill, add or update its note in `context/domains/` so future runs can discover and use it.
-4. **Link runtime installs to durable docs.** Treat `.claude/skills/`, `.codex/skills/`, and `.opencode/skills/` as installed artifacts and `context/domains/` as the discoverable documentation layer.
-5. **Write back what matters.** After completing work, document decisions, non-obvious findings, and new processes. Skip routine implementation details.
-6. **Link generously.** Use `[[wiki-links]]` to connect related notes. Update existing notes with backlinks to new ones.
-7. **Use frontmatter.** Every note needs YAML frontmatter with `title`, `created`, `updated`, and `tags`.
-8. **Update the index.** Run `qmd update` after creating or editing notes.
+Copy `AGENTS.md` to your project root. Codex reads agent definitions from this file automatically.
 
-### Quick Reference
+### With Docker
 
-```bash
-qmd search "auth" -c context           # fast keyword search
-qmd search "skills" -c context         # discover relevant skill notes
-qmd vsearch "how do sessions work" -c context  # semantic fallback
-qmd get "domains/coding-agents.md"      # retrieve domain context
-qmd get "entities/projects/openclaw.md" # retrieve entity factsheet
-qmd update                             # re-index after edits
-```
+Run `make docker-run` to get a shell with all 3 CLIs and agents pre-installed globally. Mount any project and start working immediately. See [DOCKER.md](DOCKER.md) for details.
 
-See the **company-context-management** skill (in `.claude/skills/`, `.opencode/skills/`, or `.codex/skills/`) for complete guidelines, templates, and conventions.
+### Standalone
 
-The shared context-loading command lives at `.claude/commands/brain-load.md`, `.opencode/commands/brain-load.md`, and `.codex/prompts/brain-load.md` after build/install.
+Each agent prompt lives in `src/agents/` as a CLI-agnostic markdown file. The YAML frontmatter contains only `name` and `description`. Run `make build-cli-configs` to generate CLI-specific configs for Claude Code and OpenCode.
 
 ## File Structure
 
 ```
-/root/
-├── .claude/agents/           # Generated — Claude Code format
-├── .claude/skills/           # Generated — skills for Claude Code
-├── .claude/skills/           # Generated — skills for Claude Code
-├── .opencode/agents/         # Generated — OpenCode format
-├── .opencode/skills/         # Generated — skills for OpenCode
-├── .codex/skills/            # Generated — skills for Codex
-├── workspace/                # CLI-agnostic agent source (source of truth)
-│   ├── context/              # Shared company context, use the company-context-management skill to manage it actively.
-│   ├── AGENTS.md             # This file.
+src/agents/           # CLI-agnostic source (source of truth)
+├── nova.md           # CEO & Orchestrator
+├── kepler.md         # Product Analyst
+├── turing.md         # Solution Architect
+├── euclid.md         # Spec Writer
+├── ada.md            # Full-Stack Engineer
+├── nebula.md         # QA & Security Specialist
+├── rosetta.md        # Technical Writer
+└── comet.md          # SRE & DevOps
+
+scripts/
+└── build-cli-configs.sh  # Generates CLI-specific configs
+
+.claude/agents/       # Generated — Claude Code format
+.opencode/agents/     # Generated — OpenCode format
+AGENTS.md             # Codex CLI reads this from project root
+Dockerfile            # Portable dev environment
 ```

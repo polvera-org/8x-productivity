@@ -1,0 +1,21 @@
+# Default configuration for NVIDIA Deep Researcher
+orchestrator_model: openai/gpt-oss-120b
+planner_model: openai/gpt-oss-120b
+researcher_model: nvidia/nemotron-3-super-120b-a12b
+
+search:
+  tavily_search_depth: advanced
+  tavily_max_results: 5
+  scholar_max_results: 5
+  knowledge_top_k: 5
+
+researcher:
+  max_tool_calls: 8
+  queries_per_section: 5
+
+report:
+  min_words: 3000
+  max_words: 5000
+  min_chars: 1500
+  require_toc: true
+  require_sources: true

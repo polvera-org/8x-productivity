@@ -1,0 +1,23 @@
+layers:
+  - name: index
+    path: MEMORY.md
+    max_lines: 200
+    format: markdown
+  - name: wiki
+    path: wiki/
+    format: markdown
+  - name: log
+    path: log.md
+    format: markdown
+  - name: daily-log
+    path: daily-log/
+    format: markdown
+    rotation: daily
+
+update_triggers:
+  - on_session_end
+  - on_explicit_save
+
+archive_policy:
+  max_entries: 5000
+  retention_period: 7y

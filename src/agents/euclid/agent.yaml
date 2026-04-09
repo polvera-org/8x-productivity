@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: euclid
+version: "1.0.0"
+description: "Spec Writer & Implementation Planner. Use Euclid when translating a technical design into a step-by-step execution plan, writing spec.xml files, decomposing work into self-contained implementation steps, or when you need a plan so precise that any engineer could execute it blindfolded."
+model:
+  primary: claude-sonnet-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep

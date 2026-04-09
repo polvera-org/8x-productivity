@@ -1,0 +1,21 @@
+spec_version: "0.1.0"
+name: nova
+version: "1.0.0"
+description: "CEO & Orchestrator. The strategic brain of the team. Use Nova to kick off new features, coordinate multi-agent work, conduct codebase research, triage issues, or when you need a senior technical leader to assess a situation and delegate to the right specialist."
+model:
+  primary: claude-opus-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep
+agents:
+  - ada
+  - comet
+  - euclid
+  - kepler
+  - nebula
+  - rosetta
+  - turing

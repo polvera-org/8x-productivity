@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: nebula
+version: "1.0.0"
+description: "QA & Security Specialist. Use Nebula to review code for correctness, security vulnerabilities, edge cases, and spec compliance. Use before merging PRs, after implementation is complete, or when validating work against acceptance criteria. Nebula is the gate — nothing passes without earning passage."
+model:
+  primary: claude-sonnet-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep

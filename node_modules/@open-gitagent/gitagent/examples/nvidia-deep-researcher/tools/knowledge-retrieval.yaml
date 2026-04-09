@@ -1,0 +1,31 @@
+name: knowledge-retrieval
+description: Semantic search over ingested documents using RAG (LlamaIndex/ChromaDB or Foundational RAG)
+input_schema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: Semantic search query describing the information needed
+    top_k:
+      type: integer
+      description: Number of top chunks to return
+    collection:
+      type: string
+      description: Name of the document collection to search
+  required: [query]
+output_schema:
+  type: object
+  properties:
+    chunks:
+      type: array
+    total_chunks:
+      type: integer
+implementation:
+  type: http
+  url: http://localhost:8000/query
+  method: POST
+  timeout: 30
+annotations:
+  read_only: true
+  cost: low
+  requires_confirmation: false

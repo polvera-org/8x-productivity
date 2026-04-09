@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: rosetta
+version: "1.0.0"
+description: "Technical Writer & Documentation Specialist. Use Rosetta after implementation is complete to create or update documentation — READMEs, changelogs, API docs, architecture docs, or inline code documentation. Rosetta translates code into knowledge that humans can act on."
+model:
+  primary: claude-sonnet-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep

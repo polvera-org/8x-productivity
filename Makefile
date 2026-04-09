@@ -1,15 +1,10 @@
-.PHONY: build build-a0-agents build-openclaw-agents sync-solohacker-image sync-all
+.PHONY: install build sync-all
+
+install:
+	npm install
 
 build:
-	@python3 scripts/build.py
+	npm run build
 
-build-a0-agents:
-	@python3 scripts/build.py
-
-build-openclaw-agents:
-	@python3 scripts/build.py
-
-sync-solohacker-image:
+sync-all: build
 	@bash scripts/sync-solohacker-image.sh
-
-sync-all: build sync-solohacker-image

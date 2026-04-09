@@ -1,0 +1,8 @@
+documents: []
+# Add your raw source documents here. Example:
+# documents:
+#   - path: article-title.md
+#     tags: [topic, subtopic]
+#     priority: high
+#     always_load: false
+#     description: "Brief description of what this source contains"

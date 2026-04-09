@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: ada
+version: "1.0.0"
+description: "Full-Stack Implementation Engineer. Use Ada for all coding work — frontend components, backend services, API endpoints, database queries, tests, bug fixes, refactoring, or any task that produces working code. Ada is the hands of the team."
+model:
+  primary: claude-sonnet-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep

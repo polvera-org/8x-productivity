@@ -1,0 +1,99 @@
+spec_version: "0.1.0"
+name: nvidia-deep-researcher
+version: 1.0.0
+description: >
+  Multi-agent deep research system based on NVIDIA AIQ Blueprint.
+  Produces comprehensive 3000-5000 word research reports with inline citations,
+  structured TOC, and verified sources using a coordinated orchestrator-planner-researcher hierarchy.
+
+model:
+  preferred: openai/gpt-oss-120b
+  fallback:
+    - nvidia/nemotron-3-super-120b-a12b
+  constraints:
+    temperature: 0.2
+    max_tokens: 16384
+
+skills:
+  - web-search
+  - paper-search
+  - knowledge-retrieval
+
+tools:
+  - tavily-web-search
+  - paper-search
+  - knowledge-retrieval
+
+agents:
+  planner:
+    description: Builds research plan, TOC, and search queries from a research question
+    delegation:
+      mode: explicit
+      triggers:
+        - research_query_received
+  researcher:
+    description: Executes searches and synthesizes findings with inline citations
+    delegation:
+      mode: explicit
+      triggers:
+        - plan_ready
+
+runtime:
+  max_turns: 50
+  timeout: 600
+
+compliance:
+  risk_tier: high
+  supervision:
+    human_in_the_loop: conditional
+    escalation_triggers:
+      - confidence_below: 0.7
+      - action_type: report_publication
+      - error_detected: true
+  recordkeeping:
+    audit_logging: true
+    log_format: structured_json
+    retention_period: 1y
+  segregation_of_duties:
+    roles:
+      - id: orchestrator
+        description: Coordinates workflow, delegates to planner and researcher, writes final report
+        permissions:
+          - review
+          - approve
+          - submit
+      - id: planner
+        description: Builds research plan, generates TOC, and produces search queries
+        permissions:
+          - create
+          - submit
+      - id: researcher
+        description: Executes searches, evaluates sources, and writes findings with citations
+        permissions:
+          - execute
+          - create
+          - report
+    conflicts:
+      - [orchestrator, researcher]
+      - [planner, researcher]
+    assignments:
+      nvidia-deep-researcher: [orchestrator]
+      planner: [planner]
+      researcher: [researcher]
+    handoffs:
+      - action: publish_report
+        required_roles: [orchestrator, researcher]
+        approval_required: true
+    enforcement: strict
+
+tags:
+  - research
+  - multi-agent
+  - nvidia
+  - aiq
+  - deep-researcher
+
+metadata:
+  upstream: https://github.com/NVIDIA-AI-Blueprints/aiq
+  upstream_path: src/aiq_agent/agents/deep_researcher
+  blueprint: NVIDIA AIQ Deep Researcher

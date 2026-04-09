@@ -1,0 +1,7 @@
+documents: []
+# Add documents to ingest into the knowledge base for retrieval.
+# Example:
+#   - path: docs/whitepaper.pdf
+#     tags: [research, reference]
+#     priority: high
+#     load: always

@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: comet
+version: "1.0.0"
+description: "SRE & DevOps Specialist. Use Comet for build verification, deployment, release management, CI/CD pipeline work, PR creation, health checks, or any task related to getting code from \"merged\" to \"running in production.\" Comet is the final gate — nothing ships broken."
+model:
+  primary: claude-sonnet-4-6
+tools:
+  - read
+  - edit
+  - bash
+  - write
+  - glob
+  - grep

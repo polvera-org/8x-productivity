@@ -1,0 +1,23 @@
+spec_version: "0.1.0"
+name: planner
+version: 1.0.0
+description: >
+  Builds structured research plans from a research question. Generates Table of Contents,
+  targeted search queries, and task analysis. Prioritizes knowledge base over papers over web.
+
+model:
+  preferred: openai/gpt-oss-120b
+  fallback:
+    - nvidia/nemotron-3-super-120b-a12b
+  constraints:
+    temperature: 0.2
+    max_tokens: 4096
+
+runtime:
+  max_turns: 10
+  timeout: 120
+
+tags:
+  - planning
+  - research
+  - nvidia

@@ -1,0 +1,22 @@
+spec_version: "0.1.0"
+name: llm-wiki
+version: 1.0.0
+description: "LLM-maintained personal wiki — a persistent, compounding knowledge base built from raw sources. Inspired by Karpathy's LLM Wiki pattern."
+author: gitagent-examples
+license: MIT
+model:
+  preferred: claude-sonnet-4-5-20250929
+  fallback:
+    - claude-haiku-4-5-20251001
+skills:
+  - wiki-ingest
+  - wiki-query
+  - wiki-lint
+runtime:
+  max_turns: 50
+  timeout: 300
+tags:
+  - knowledge-management
+  - wiki
+  - research
+  - personal-knowledge-base

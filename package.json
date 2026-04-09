@@ -1,0 +1,14 @@
+{
+  "name": "8x-productivity",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsx scripts/build.ts"
+  },
+  "devDependencies": {
+    "@open-gitagent/gitagent": "latest",
+    "js-yaml": "^4.1.0",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
