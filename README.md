@@ -1,6 +1,6 @@
 # 8x Productivity
 
-**An AI agent roster for product engineering teams.**
+**An AI agent roster and harness for product engineering teams.**
 
 Eight specialized agents — each with distinct expertise, personality, and domain boundaries — that cover the full product development lifecycle: from requirements to architecture to implementation to QA to deployment.
 
