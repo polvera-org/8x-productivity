@@ -464,18 +464,14 @@
   /* ── Agent Avatars ─────────────────────────────────── */
 
   .agent-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    overflow: hidden;
+    width: 64px;
+    height: 64px;
     margin: 0 auto 0.5rem;
-    border: 2px solid var(--border);
-    background: var(--bg);
   }
 
   .agent-card--lead .agent-avatar {
-    width: 56px;
-    height: 56px;
+    width: 80px;
+    height: 80px;
   }
 
   .agent-avatar svg {
@@ -485,13 +481,9 @@
   }
 
   .pipe-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    overflow: hidden;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
-    border: 1.5px solid var(--border);
-    background: var(--bg);
     display: inline-block;
     vertical-align: middle;
     margin-right: 0.4rem;
@@ -925,6 +917,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/gh/nicolasleao/pixeloids@main/pixeloids.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/nicolasleao/pixeloids@main/animations.js"></script>
 <script type="module">
 const ASCII_ART = `                      îîrîîîîîîîîc
                   cîîîîîîîîîîîîîîîîîîî
@@ -1052,25 +1045,25 @@ copyBtn.addEventListener('click', () => {
 
 // ── Pixeloid Avatars ──────────────────────────────────────
 function renderAvatars() {
-  if (typeof Pixeloids === 'undefined') return;
+  if (typeof PixeloidsAnimations === 'undefined') return;
 
   // Agent card avatars
   document.querySelectorAll('.agent-avatar[data-seed]').forEach(el => {
-    el.innerHTML = Pixeloids.createSvg(el.dataset.seed, {
-      size: 128, variant: 'minimal', background: true
+    el.innerHTML = PixeloidsAnimations.createAnimatedSvg(el.dataset.seed, {
+      size: 128, variant: 'monster', background: false
     });
   });
 
   // Pipeline step avatars
   document.querySelectorAll('.pipe-avatar[data-seed]').forEach(el => {
-    el.innerHTML = Pixeloids.createSvg(el.dataset.seed, {
-      size: 64, variant: 'minimal', background: true
+    el.innerHTML = PixeloidsAnimations.createAnimatedSvg(el.dataset.seed, {
+      size: 64, variant: 'monster', background: false
     });
   });
 }
 
 // Wait for Pixeloids global to be available
-if (typeof Pixeloids !== 'undefined') {
+if (typeof PixeloidsAnimations !== 'undefined') {
   renderAvatars();
 } else {
   window.addEventListener('load', renderAvatars);
@@ -1083,10 +1076,10 @@ const donateClose = document.getElementById('donate-modal-close');
 const donateMascot = document.getElementById('donate-mascot');
 
 function openDonate() {
-  if (typeof Pixeloids !== 'undefined') {
+  if (typeof PixeloidsAnimations !== 'undefined') {
     const seed = 'donate-' + Math.random().toString(36).slice(2, 8);
-    donateMascot.innerHTML = Pixeloids.createSvg(seed, {
-      size: 160, variant: 'minimal', background: true
+    donateMascot.innerHTML = PixeloidsAnimations.createAnimatedSvg(seed, {
+      size: 160, variant: 'monster', background: false
     });
   }
   donateModal.classList.add('open');
