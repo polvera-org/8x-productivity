@@ -3,10 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsx scripts/build.ts"
+    "build": "tsx scripts/build.ts",
+    "setup": "tsx scripts/install.ts"
   },
   "devDependencies": {
-"js-yaml": "^4.1.0",
+    "@inquirer/prompts": "^7.5.0",
+    "js-yaml": "^4.1.0",
     "tsx": "latest",
     "typescript": "latest"
   }

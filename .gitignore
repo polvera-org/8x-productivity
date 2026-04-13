@@ -1,13 +1,13 @@
 # Secrets
 .env
 
-# OpenCode - track agents only
-.opencode/*
-!.opencode/agents/
-
-# Claude Code - track agents only
-.claude/*
-!.claude/agents/
+# CLIs
+.claude
+.opencode
+.codex
+.pi
+.openclaw
+.a0proj
 
 # WebSocket server
 ws-server/node_modules/
