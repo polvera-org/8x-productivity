@@ -8,6 +8,7 @@
 .pi
 .openclaw
 .a0proj
+.playwright-cli
 
 # WebSocket server
 ws-server/node_modules/
