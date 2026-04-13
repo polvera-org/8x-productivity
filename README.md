@@ -13,7 +13,7 @@ Eight specialized agents — each with distinct expertise, personality, and doma
 | **Nova** | CEO & Orchestrator | Researches the codebase, coordinates work, delegates to specialists |
 | **Kepler** | Product Analyst | Translates business needs into testable requirements and acceptance criteria |
 | **Turing** | Solution Architect | Designs technical solutions grounded in existing codebase patterns |
-| **Euclid** | Spec Writer | Decomposes designs into self-contained, executable implementation steps |
+| **Euclid** | Idea Crystallizer & Spec Writer | Crystallizes fuzzy ideas via first-principles thinking; decomposes designs into executable implementation steps |
 | **Ada** | Full-Stack Engineer | Writes production-quality code — frontend, backend, tests, infrastructure |
 | **Nebula** | QA & Security | Reviews code for correctness, security vulnerabilities, and edge cases |
 | **Rosetta** | Technical Writer | Produces accurate documentation that matches the codebase |
@@ -23,16 +23,18 @@ Eight specialized agents — each with distinct expertise, personality, and doma
 
 ## How It Works
 
-The agents follow a **Plan → Implement → QA** workflow:
+The agents follow an **Ideation → Plan → Implement → Verify** workflow:
 
 ```
-Plan                              Implement           Verify & Ship
-─────────────────────────────     ───────────         ─────────────────
-Nova researches                   Ada builds           Nebula reviews
-Kepler defines requirements                            Rosetta documents
-Turing designs architecture                            Comet deploys
-Euclid writes the plan
+Ideation (optional)     Plan                          Implement      Verify & Ship
+───────────────────     ─────────────────────────     ───────────    ─────────────────
+Euclid crystallizes     Nova researches               Ada builds     Nebula reviews
+the idea                Kepler defines requirements                  Rosetta documents
+                        Turing designs architecture                  Comet deploys
+                        Euclid writes the plan
 ```
+
+Nova detects when a task is fuzzy and routes to Euclid for ideation before research begins. Clear tasks skip straight to planning.
 
 Each agent has hard boundaries — they do their job and nothing else. The architect does not write code. The engineer does not make product decisions. QA does not fix bugs. This separation prevents the role confusion that degrades output quality in single-agent workflows.
 
@@ -40,34 +42,26 @@ Each agent has hard boundaries — they do their job and nothing else. The archi
 
 ## Installation
 
-Clone the repo and run the build to generate CLI-specific configs:
+### Install with Claude
+
+If you have [Claude Code](https://claude.ai/code) installed, run this one-liner in your terminal. Claude will guide you through the setup interactively — asking which CLIs you use, whether to install globally or into a specific project, and handling everything from there.
 
 ```bash
-git clone git@github.com:polvera-org/8x-productivity.git
+claude "$(curl -fsSL https://raw.githubusercontent.com/polvera-org/8x-productivity/main/docs/AGENT_SETUP.md)"
+```
+
+### Manual install
+
+Clone the repo, install dependencies, and run the interactive setup wizard:
+
+```bash
+git clone https://github.com/polvera-org/8x-productivity.git
 cd 8x-productivity
 npm install
-npm run build
+npm run setup
 ```
 
-`npm run build` renders all agent definitions into `.claude/`, `.opencode/`, `.openclaw/`, and `.a0proj/`, and installs them globally into `~/.claude/` and `~/.opencode/` so agents are available in any project.
-
-### Manual copy (no build step)
-
-The generated configs are checked in, so you can copy them directly:
-
-```bash
-# Claude Code
-cp -r .claude/agents/ your-project/.claude/agents/
-
-# OpenCode
-cp -r .opencode/agents/ your-project/.opencode/agents/
-
-# Codex CLI
-cp AGENTS.md your-project/AGENTS.md
-
-# OpenClaw
-cp -r .openclaw/ your-project/.openclaw/
-```
+`npm run setup` is an interactive wizard that asks which CLIs you want to install for (Claude Code, OpenCode, Codex, OpenClaw, Agent Zero), whether to install globally or into a specific project directory, and handles all the copying.
 
 ---
 
@@ -111,4 +105,4 @@ Each agent prompt is built on these principles:
 ## Adding or Editing Agents
 
 1. Edit `src/agents/<name>/SOUL.md` for prompt changes, or `src/agents/<name>/agent.yaml` for metadata.
-2. Run `npm run build` to regenerate all CLI outputs.
+2. Run `npm run build` to regenerate all output formats, or `npm run setup` to rebuild and reinstall to your targets.
